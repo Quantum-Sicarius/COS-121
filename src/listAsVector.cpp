@@ -34,12 +34,18 @@ void ListAsVector::shrink() {
         this->theList->resize(this->theList->size() - 1);
 }
 
-/**
-   Object& ListAsVector::operator[](int i) {
-        return *(*(this->theList))[i];
-   }
- */
+int ListAsVector::size() {
+        return this->theList->size();
+}
 
 Object& ListAsVector::operator[](int i) {
         return *this->theList->at(i);
+}
+
+int ListAsVector::compareTo ( Object const&) const {
+        return 0;
+}
+
+void ListAsVector::print ( std::ostream& o ) const {
+
 }

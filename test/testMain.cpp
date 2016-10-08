@@ -5,6 +5,10 @@
 #include "../libs/dynamicArrayList.hpp"
 #include "../libs/listAsSLL.hpp"
 #include "../libs/listAsDLL.hpp"
+#include "../libs/fixedSizedMatrix.hpp"
+#include "../libs/dynamicSizedMatrix.hpp"
+#include "../libs/flexiMatrix.hpp"
+
 
 #include <sstream>      // std::stringstream
 
@@ -386,4 +390,8 @@ TEST_CASE( "List as doubly linked list tests", "[listAsDLL]" ) {
                 REQUIRE(error == true);
                 REQUIRE(ss.str() == result);
         }
+}
+
+TEST_CASE( "Fiex sized matrix tests", "[fixedSizedMatrix]" ) {
+        Matrix *m = new FixedSizedMatrix();
 }

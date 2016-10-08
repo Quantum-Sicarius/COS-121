@@ -10,6 +10,7 @@ struct node {
         struct node *next;
 };
 protected:
+int compareTo ( Object const&) const;
 int size;
 node* head;
 public:
@@ -19,6 +20,8 @@ void insert(Object*&);
 void remove(Object*&);
 void shrink();
 Object& operator[](int);
+
+void print ( std::ostream& = std::cout ) const;
 };
 
 #endif

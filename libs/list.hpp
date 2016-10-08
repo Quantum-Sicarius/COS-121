@@ -2,7 +2,6 @@
 #define LIST_H
 
 #include "container.hpp"
-#include "object.hpp"
 
 class List : public Container {
 public:

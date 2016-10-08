@@ -151,3 +151,11 @@ Object& ListAsDLL::operator[](int i) {
 
 
 }
+
+int ListAsDLL::compareTo ( Object const&) const {
+        return 0;
+}
+
+void ListAsDLL::print ( std::ostream& o ) const {
+
+}

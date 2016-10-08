@@ -139,3 +139,11 @@ Object& ListAsSLL::operator[](int i) {
 
 
 }
+
+int ListAsSLL::compareTo ( Object const&) const {
+        return 0;
+}
+
+void ListAsSLL::print ( std::ostream& o ) const {
+
+}

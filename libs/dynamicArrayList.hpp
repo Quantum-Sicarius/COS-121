@@ -6,6 +6,7 @@
 
 class DynamicArrayList : public ListAsArray {
 protected:
+int compareTo ( Object const&) const;
 Object **theList;
 unsigned listSize;
 void resize(unsigned int);
@@ -16,7 +17,11 @@ void insert(Object*&);
 void remove(Object*&);
 void grow();
 void shrink();
+int size();
 Object& operator[](int);
+
+void print ( std::ostream& = std::cout ) const;
+
 };
 
 #endif

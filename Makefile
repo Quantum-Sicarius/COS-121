@@ -1,7 +1,7 @@
 # Variables
 CC = g++
 FLAGS = -Wall -Werror -pedantic -std=gnu++11
-OBJECTS = nullObject.o container.o auditorium.o integer.o dynamicArrayList.o listAsVector.o listAsSLL.o listAsDLL.o
+OBJECTS = object.o nullObject.o container.o auditorium.o integer.o dynamicArrayList.o listAsVector.o listAsSLL.o listAsDLL.o dynamicSizedMatrix.o fixedSizedMatrix.o flexiMatrix.o
 OBJECTS_TEST = $(OBJECTS) catchConfig.o testMain.o
 
 #main
@@ -19,6 +19,8 @@ catchConfig.o: libs/catch.hpp test/catchConfig.cpp
 	$(CC) $(FLAGS) -c test/catchConfig.cpp
 main.o: src/main.cpp
 	$(CC) $(FLAGS) -c src/main.cpp
+object.o: libs/object.hpp src/object.cpp
+	$(CC) $(FLAGS) -c src/object.cpp
 nullObject.o: libs/object.hpp libs/nullObject.hpp src/nullObject.cpp
 	$(CC) $(FLAGS) -c src/nullObject.cpp
 container.o: libs/object.hpp libs/container.hpp src/container.cpp
@@ -35,8 +37,13 @@ listAsSLL.o: libs/list.hpp libs/listAsSLL.hpp src/listAsSLL.cpp
 	$(CC) $(FLAGS) -c src/listAsSLL.cpp
 listAsDLL.o: libs/listAsSLL.hpp libs/listAsDLL.hpp src/listAsDLL.cpp
 	$(CC) $(FLAGS) -c src/listAsDLL.cpp
+dynamicSizedMatrix.o: libs/matrix.hpp libs/dynamicSizedMatrix.hpp src/dynamicSizedMatrix.cpp
+	$(CC) $(FLAGS) -c src/dynamicSizedMatrix.cpp
+fixedSizedMatrix.o: libs/matrix.hpp libs/fixedSizedMatrix.hpp src/fixedSizedMatrix.cpp
+	$(CC) $(FLAGS) -c src/fixedSizedMatrix.cpp
+flexiMatrix.o: libs/matrix.hpp libs/flexiMatrix.hpp src/flexiMatrix.cpp
+	$(CC) $(FLAGS) -c src/flexiMatrix.cpp
 
-#other functions
 clean:
 	rm *.o main *.tar.gz
 

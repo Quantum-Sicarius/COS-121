@@ -71,9 +71,22 @@ void DynamicArrayList::shrink() {
         this->theList = newList;
 }
 
+int DynamicArrayList::size() {
+        return this->listSize;
+}
+
+
 Object& DynamicArrayList::operator[](int i) {
         if (i < 0 || (unsigned)i >= this->listSize) {
                 throw "Out of Bounds!";
         }
         return *this->theList[i];
+}
+
+int DynamicArrayList::compareTo ( Object const&) const {
+        return 0;
+}
+
+void DynamicArrayList::print ( std::ostream& o ) const {
+
 }

@@ -1,7 +1,9 @@
 #ifndef CONTAINER_H
 #define CONTAINER_H
 
-class Container {
+#include "object.hpp"
+
+class Container : public Object {
 
 };
 
