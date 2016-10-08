@@ -1,7 +1,12 @@
 # Variables
 ifndef CXX
-	CXX = clang++-3.8
+  CXX = clang++-3.8
 endif
+ifeq ($(COMPILER), CXX)
+else
+  CXX = $(COMPILER)
+endif
+
 
 ifndef CXXFLAGS
 	CXXFLAGS = -Wall -Werror -pedantic -std=c++11
