@@ -1,6 +1,6 @@
 # Variables
 CC = g++
-FLAGS = -Wall -Werror -pedantic -std=c++11
+FLAGS = -Wall -Werror -pedantic -std=gnu++11
 OBJECTS = nullObject.o container.o auditorium.o integer.o dynamicArrayList.o listAsVector.o listAsSLL.o listAsDLL.o
 OBJECTS_TEST = $(OBJECTS) catchConfig.o testMain.o
 
