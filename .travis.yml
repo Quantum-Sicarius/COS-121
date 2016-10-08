@@ -2,7 +2,6 @@ language: cpp
 matrix:
   include:
     - os: linux
-      compiler: clang
       addons: &clang38
         apt:
           sources: ['llvm-toolchain-precise-3.8', 'ubuntu-toolchain-r-test']
@@ -10,10 +9,11 @@ matrix:
       env: CXX='clang++-3.8'
 
     - os: linux
-      compiler: gcc
       addons: &gcc5
         apt:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['g++-5']
-      env: CXX='ccache g++-5'
+      env: CXX='g++-5'
+before_install:
+
 script: make testMain
