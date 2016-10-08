@@ -11,6 +11,4 @@ matrix:
 before_script:
   - $COMPILER --version
   - cmake --version
-  - mkdir build
-  - cd build
 script: make testMain
