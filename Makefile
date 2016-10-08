@@ -1,15 +1,12 @@
-# Variables
-ifndef CXX
-  CXX = clang++-3.8
-endif
-ifeq ($(COMPILER), CXX)
-else
-  CXX = $(COMPILER)
-endif
+CXX = clang++-3.8
 
+# Check if the COMPILER variable is set. If it is set the variable CXX to it.
+ifneq ($(strip $(COMPILER)),)
+ CXX = $(COMPILER)
+endif
 
 ifndef CXXFLAGS
-	CXXFLAGS = -Wall -Werror -pedantic -std=c++11
+ CXXFLAGS = -Wall -Werror -pedantic -std=c++11
 endif
 
 OBJECTS = object.o nullObject.o container.o auditorium.o integer.o dynamicArrayList.o listAsVector.o listAsSLL.o listAsDLL.o dynamicSizedMatrix.o fixedSizedMatrix.o flexiMatrix.o
@@ -55,7 +52,7 @@ flexiMatrix.o: libs/matrix.hpp libs/flexiMatrix.hpp src/flexiMatrix.cpp
 	$(CXX) $(CXXFLAGS) -c src/flexiMatrix.cpp
 
 clean:
-	rm *.o main *.tar.gz
+	rm *.o main *.tar.gz testMain
 
 doxygen:
 #create doxygen documentation
