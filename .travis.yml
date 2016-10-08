@@ -7,7 +7,7 @@ matrix:
         apt:
           sources: ['llvm-toolchain-precise-3.8', 'ubuntu-toolchain-r-test']
           packages: ['clang-3.8']
-      env: COMPILER='ccache clang++-3.8'
+      env: CXX='clang++-3.8'
 
     - os: linux
       compiler: gcc
@@ -15,7 +15,7 @@ matrix:
         apt:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['g++-5']
-      env: COMPILER='ccache g++-5'
+      env: CXX='ccache g++-5'
 
 before_script:
   - $COMPILER --version
