@@ -1,5 +1,5 @@
 # Variables
-CC = g++
+CC = clang++
 FLAGS = -Wall -Werror -pedantic -std=c++11
 OBJECTS = object.o nullObject.o container.o auditorium.o integer.o dynamicArrayList.o listAsVector.o listAsSLL.o listAsDLL.o dynamicSizedMatrix.o fixedSizedMatrix.o flexiMatrix.o
 OBJECTS_TEST = $(OBJECTS) catchConfig.o testMain.o
