@@ -1,12 +1,15 @@
 language: cpp
 matrix:
   include:
-    - os: linux
-      compiler: clang
+    - compiler: clang
+      os: linux
       addons:
         apt:
-          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.7', 'kalakris-cmake']
-          packages: ['clang-3.7', 'cmake']
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-precise-3.7
+          packages:
+            - clang-3.7
       env: COMPILER=clang++-3.7
 before_script:
   - $COMPILER --version
