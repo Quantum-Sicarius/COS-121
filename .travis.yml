@@ -16,8 +16,4 @@ matrix:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['g++-5']
       env: CXX='ccache g++-5'
-
-before_script:
-  - $COMPILER --version
-  - cmake --version
 script: make testMain
