@@ -5,12 +5,13 @@
 
 class Integer : public Object {
 protected:
-int myInteger;
-int compareTo ( Object const&) const;
+  int myInteger;
+  int compareTo(Object const &) const;
+
 public:
-Integer(int);
-void print ( std::ostream& os ) const;
-operator int();
+  Integer(int);
+  void print(std::ostream &os) const;
+  operator int();
 };
 
 #endif

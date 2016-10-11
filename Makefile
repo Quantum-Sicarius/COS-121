@@ -1,4 +1,4 @@
-CXX = clang++-3.8
+CXX = clang++
 
 # Check if the COMPILER variable is set. If it is set the variable CXX to it.
 ifneq ($(strip $(COMPILER)),)
@@ -70,7 +70,7 @@ run:
 	./main
 
 # Test
-runTest:
+test: testMain
 	@echo "Start build at: "
 	@date
 	@make testMain

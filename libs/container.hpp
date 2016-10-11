@@ -3,8 +3,6 @@
 
 #include "object.hpp"
 
-class Container : public Object {
-
-};
+class Container : public Object {};
 
 #endif

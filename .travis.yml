@@ -17,5 +17,3 @@ matrix:
           packages: ['g++-5']
       env: COMPILER='g++-5'
 before_install:
-
-script: make testMain
