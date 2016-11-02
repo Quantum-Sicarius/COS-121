@@ -61,7 +61,6 @@ public:
 
     auto current_Node = this->head.get();
     auto prev_Node = current_Node;
-    auto next_Node = current_Node;
     bool found = false;
 
     if (current_Node->value == o) {
@@ -78,7 +77,6 @@ public:
 
       prev_Node = current_Node;
       current_Node = current_Node->next.get();
-      next_Node = current_Node->next.get();
     }
 
     if (!found) {

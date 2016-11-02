@@ -27,5 +27,6 @@
 *.exe
 *.out
 *.app
-main
-testMain
+
+# Build Directory
+build/*
