@@ -9,10 +9,10 @@
  * A matrix class using Doubly-Linked lists.
  */
 
-class FlexiMatrix : public Matrix {
+template <typename T> class FlexiMatrix : public Matrix<T> {
 protected:
   int compareTo(Object const &) const;
-  ListAsDLL *matrix;
+  ListAsDLL<T> *matrix;
 
 public:
   /*
@@ -32,7 +32,7 @@ public:
    * Returns the object at index.
    * @param An integer indicating the index.
    */
-  List &operator[](int);
+  List<T> &operator[](int);
 
   void print(std::ostream & = std::cout) const;
 };

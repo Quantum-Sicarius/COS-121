@@ -8,11 +8,10 @@
  * Concrete FixedSizedMatrix class.
  * A matrix class using ListAsVector and/or DynamicArrayList lists.
  */
-
-class FixedSizedMatrix : public Matrix {
+template <typename T> class FixedSizedMatrix : public Matrix<T> {
 protected:
   int compareTo(Object const &) const;
-  ListAsArray *matrix;
+  ListAsArray<T> *matrix;
 
 public:
   /*
@@ -24,7 +23,7 @@ public:
    * Constructor parsed with the ListAsArray object to use.
    * @param The ListAsArray object
    */
-  FixedSizedMatrix(const ListAsArray &);
+  FixedSizedMatrix(const ListAsArray<T> &);
   /*
    * Deconstructor.
    * The deconstructor responsible for freeing back memory.
@@ -59,7 +58,7 @@ public:
    * Returns the object at index.
    * @param An integer indicating the index.
    */
-  List &operator[](int);
+  List<T> &operator[](int);
 
   void print(std::ostream & = std::cout) const;
 };

@@ -16,4 +16,4 @@ matrix:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['g++-5']
       env: COMPILER='g++-5'
-script: make test
+script: make test BUILD=release

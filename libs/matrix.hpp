@@ -8,8 +8,7 @@
  * Abstract Matrix class.
  * The abstract class for all matrices.
  */
-
-class Matrix : public Container {
+template <typename T> class Matrix : public Container<T> {
 public:
   /*
    * Virtual Deconstructor.
@@ -45,7 +44,7 @@ public:
    * Returns the object at index.
    * @param An integer indicating the index.
    */
-  virtual List &operator[](int) = 0;
+  virtual List<T> &operator[](int) = 0;
 };
 
 #endif

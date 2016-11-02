@@ -3,24 +3,50 @@
 
 #include "listAsArray.hpp"
 #include "object.hpp"
+#include <algorithm>
 #include <vector>
 
-class ListAsVector : public ListAsArray {
+template <typename T> class ListAsVector : public ListAsArray<T> {
 protected:
-  std::vector<Object *> *theList;
-  int compareTo(Object const &) const;
+  std::unique_ptr<std::vector<T>> theList;
+  int compareTo(Object const &) const { return 0; }
 
 public:
-  ListAsVector();
-  ~ListAsVector();
-  void insert(Object *&);
-  void remove(Object *&);
-  void grow();
-  void shrink();
-  int size();
-  Object &operator[](int);
+  ListAsVector() {
+    std::unique_ptr<std::vector<T>> newList(new std::vector<T>);
+    this->theList = std::move(newList);
+  }
 
-  void print(std::ostream & = std::cout) const;
+  ~ListAsVector() { this->theList.reset(); }
+
+  void insert(T o) { this->theList->push_back(o); }
+  void remove(T o) {
+    for (auto &object :
+         *(this->theList)) // access by reference to avoid copying
+    {
+      if (object == o) {
+        object.reset();
+        this->theList->erase(
+            std::remove(this->theList->begin(), this->theList->end(), object),
+            this->theList->end());
+      }
+    }
+  }
+
+  void grow() { return; }
+
+  void shrink() {
+    if (this->theList->size() == 0) {
+      return;
+    }
+    this->theList->resize(this->theList->size() - 1);
+  }
+
+  int size() { return this->theList->size(); }
+
+  T &operator[](int i) { return this->theList->at(i); }
+
+  void print(std::ostream &o) const {}
 };
 
 #endif

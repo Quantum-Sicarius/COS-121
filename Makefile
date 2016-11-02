@@ -1,4 +1,5 @@
 CXX = clang++
+BUILD := debug
 
 # Check if the COMPILER variable is set. If it is set the variable CXX to it.
 ifneq ($(strip $(COMPILER)),)
@@ -6,57 +7,55 @@ ifneq ($(strip $(COMPILER)),)
 endif
 
 ifndef CXXFLAGS
- CXXFLAGS = -Wall -Werror -pedantic -std=c++11
+ cxxflags.release := -fcolor-diagnostics -Wall -pedantic -std=c++14
+ cxxflags.debug := ${cxxflags.release} -g -fsanitize=address -fstack-protector
+ CXXFLAGS := ${cxxflags.${BUILD}}
 endif
 
-OBJECTS = object.o nullObject.o container.o auditorium.o integer.o dynamicArrayList.o listAsVector.o listAsSLL.o listAsDLL.o dynamicSizedMatrix.o fixedSizedMatrix.o flexiMatrix.o
-OBJECTS_TEST = $(OBJECTS) catchConfig.o testMain.o
+OBJECTS = $(addprefix build/,$(notdir object.o nullObject.o auditorium.o integer.o dynamicSizedMatrix.o fixedSizedMatrix.o flexiMatrix.o))
+OBJECTS_TEST = $(OBJECTS) build/catchConfig.o build/testMain.o
 
-#main
-main: $(OBJECTS)
-	$(CXX)  $(CXXFLAGS) $(OBJECTS) -o $@
+# Make build directory.
+$(shell mkdir -p build)
 
-testMain: $(OBJECTS_TEST)
+.PHONY: test.out
+test.out: $(OBJECTS_TEST)
 	$(CXX) $(CXXFLAGS) $(OBJECTS_TEST) -o $@
 
-#build
-testMain.o: test/testMain.cpp
-	$(CXX) $(CXXFLAGS) -c test/testMain.cpp
-catchConfig.o: libs/catch.hpp test/catchConfig.cpp
-	$(CXX) $(CXXFLAGS) -c test/catchConfig.cpp
-main.o: src/main.cpp
-	$(CXX) $(CXXFLAGS) -c src/main.cpp
-object.o: libs/object.hpp src/object.cpp
-	$(CXX) $(CXXFLAGS) -c src/object.cpp
-nullObject.o: libs/object.hpp libs/nullObject.hpp src/nullObject.cpp
-	$(CXX) $(CXXFLAGS) -c src/nullObject.cpp
-container.o: libs/object.hpp libs/container.hpp src/container.cpp
-	$(CXX) $(CXXFLAGS) -c src/container.cpp
-auditorium.o: libs/object.hpp libs/auditorium.hpp src/auditorium.cpp
-	$(CXX) $(CXXFLAGS) -c src/auditorium.cpp
-integer.o: libs/object.hpp libs/integer.hpp src/integer.cpp
-	$(CXX) $(CXXFLAGS) -c src/integer.cpp
-dynamicArrayList.o: libs/listAsArray.hpp libs/dynamicArrayList.hpp src/dynamicArrayList.cpp
-	$(CXX) $(CXXFLAGS) -c src/dynamicArrayList.cpp
-listAsVector.o: libs/listAsArray.hpp libs/listAsVector.hpp src/listAsVector.cpp
-	$(CXX) $(CXXFLAGS) -c src/listAsVector.cpp
-listAsSLL.o: libs/list.hpp libs/listAsSLL.hpp src/listAsSLL.cpp
-	$(CXX) $(CXXFLAGS) -c src/listAsSLL.cpp
-listAsDLL.o: libs/listAsSLL.hpp libs/listAsDLL.hpp src/listAsDLL.cpp
-	$(CXX) $(CXXFLAGS) -c src/listAsDLL.cpp
-dynamicSizedMatrix.o: libs/matrix.hpp libs/dynamicSizedMatrix.hpp src/dynamicSizedMatrix.cpp
-	$(CXX) $(CXXFLAGS) -c src/dynamicSizedMatrix.cpp
-fixedSizedMatrix.o: libs/matrix.hpp libs/fixedSizedMatrix.hpp src/fixedSizedMatrix.cpp
-	$(CXX) $(CXXFLAGS) -c src/fixedSizedMatrix.cpp
-flexiMatrix.o: libs/matrix.hpp libs/flexiMatrix.hpp src/flexiMatrix.cpp
-	$(CXX) $(CXXFLAGS) -c src/flexiMatrix.cpp
+.PHONY: main.out
+main.out: src/main.cpp
+	$(CXX) $(CXXFLAGS) -c src/main.cpp -o $@
 
+build/testMain.o: test/testMain.cpp
+	$(CXX) $(CXXFLAGS) -c test/testMain.cpp -o $@
+build/catchConfig.o: libs/catch.hpp test/catchConfig.cpp
+	$(CXX) $(CXXFLAGS) -c test/catchConfig.cpp -o $@
+build/object.o: libs/object.hpp src/object.cpp
+	$(CXX) $(CXXFLAGS) -c src/object.cpp -o $@
+build/nullObject.o: libs/object.hpp libs/nullObject.hpp src/nullObject.cpp
+	$(CXX) $(CXXFLAGS) -c src/nullObject.cpp -o $@
+build/container.o: libs/object.hpp libs/container.hpp src/container.cpp
+	$(CXX) $(CXXFLAGS) -c src/container.cpp -o $@
+build/auditorium.o: libs/object.hpp libs/auditorium.hpp src/auditorium.cpp
+	$(CXX) $(CXXFLAGS) -c src/auditorium.cpp -o $@
+build/integer.o: libs/object.hpp libs/integer.hpp src/integer.cpp
+	$(CXX) $(CXXFLAGS) -c src/integer.cpp -o $@
+build/dynamicSizedMatrix.o: libs/matrix.hpp libs/dynamicSizedMatrix.hpp src/dynamicSizedMatrix.cpp
+	$(CXX) $(CXXFLAGS) -c src/dynamicSizedMatrix.cpp -o $@
+build/fixedSizedMatrix.o: libs/matrix.hpp libs/fixedSizedMatrix.hpp src/fixedSizedMatrix.cpp
+	$(CXX) $(CXXFLAGS) -c src/fixedSizedMatrix.cpp -o $@
+build/flexiMatrix.o: libs/matrix.hpp libs/flexiMatrix.hpp src/flexiMatrix.cpp
+	$(CXX) $(CXXFLAGS) -c src/flexiMatrix.cpp -o $@
+
+.PHONY: clean
 clean:
-	rm *.o main *.tar.gz testMain
+	rm -rf *.o *.out *.tar.gz build
 
+.PHONY: doxygen
 doxygen:
 #create doxygen documentation
 
+.PHONY: package
 package:
 #package all the files into a .tar.gz
 
@@ -64,16 +63,17 @@ package:
 run:
 	@echo "Start build at: "
 	@date
-	@make main
+	@make main.out
 	@echo "Build stopped at: "
 	@date
-	./main
+	./main.out
 
 # Test
-test: testMain
+.PHONY: test
+test:
 	@echo "Start build at: "
 	@date
-	@make testMain
+	@make test.out
 	@echo "Build stopped at: "
 	@date
-	./testMain
+	ASAN_OPTIONS=symbolize=1 ASAN_SYMBOLIZER_PATH=$(shell which llvm-symbolizer) ./test.out

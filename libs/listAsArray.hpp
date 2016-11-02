@@ -3,7 +3,7 @@
 
 #include "list.hpp"
 
-class ListAsArray : public List {
+template <typename T> class ListAsArray : public List<T> {
 public:
   virtual void grow() = 0;
   virtual int size() = 0;
