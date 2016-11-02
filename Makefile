@@ -7,9 +7,12 @@ ifneq ($(strip $(COMPILER)),)
 endif
 
 ifndef CXXFLAGS
- cxxflags.release := -fcolor-diagnostics -Wall -pedantic -std=c++14
- cxxflags.debug := ${cxxflags.release} -g -fsanitize=address -fstack-protector
+ cxxflags.release := -Wall -pedantic -std=c++14
+ cxxflags.debug := ${cxxflags.release} -fcolor-diagnostics -g -fsanitize=address -fstack-protector
  CXXFLAGS := ${cxxflags.${BUILD}}
+ runflags.release := 
+ runflags.debug := ASAN_OPTIONS=symbolize=1 ASAN_SYMBOLIZER_PATH=$(shell which llvm-symbolizer)
+ RUNFLAGS := ${runflags.${BUILD}}
 endif
 
 OBJECTS = $(addprefix build/,$(notdir object.o nullObject.o auditorium.o integer.o dynamicSizedMatrix.o fixedSizedMatrix.o flexiMatrix.o))
@@ -76,4 +79,4 @@ test:
 	@make test.out
 	@echo "Build stopped at: "
 	@date
-	ASAN_OPTIONS=symbolize=1 ASAN_SYMBOLIZER_PATH=$(shell which llvm-symbolizer) ./test.out
+	$(RUNFLAGS) ./test.out
