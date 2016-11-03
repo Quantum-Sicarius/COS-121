@@ -8,10 +8,10 @@
  * Concrete DynamicSizedMatrix class.
  * A matrix class using Linked and/or Doubly-Linked lists.
  */
-template <typename T> class DynamicSizedMatrix : public Matrix<T> {
+class DynamicSizedMatrix : public Matrix {
 protected:
   int compareTo(Object const &) const;
-  ListAsSLL<T> *matrix;
+  ListAsSLL *matrix;
 
 public:
   /*
@@ -31,7 +31,7 @@ public:
    * Returns the object at index.
    * @param An integer indicating the index.
    */
-  List<T> &operator[](int);
+  std::shared_ptr<List> operator[](int);
 
   void print(std::ostream & = std::cout) const;
 };

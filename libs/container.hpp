@@ -3,6 +3,6 @@
 
 #include "object.hpp"
 
-template <typename T> class Container : public Object {};
+class Container : public Object {};
 
 #endif

@@ -9,18 +9,17 @@
  * Concrete FixedSizedMatrix class.
  * A matrix class using ListAsVector and/or DynamicArrayList lists.
  */
-template <typename T> class FixedSizedMatrix : public Matrix<T> {
+class FixedSizedMatrix : public Matrix {
 protected:
   int compareTo(Object const &) const { return 0; };
-  std::unique_ptr<std::vector<std::unique_ptr<ListAsArray<T>>>> matrix;
+  std::unique_ptr<ListAsArray> matrix;
 
 public:
   /*
    * Default constructor.
    */
   FixedSizedMatrix() {
-    std::unique_ptr<std::vector<std::unique_ptr<ListAsArray<T>>>> newMatrix(
-        new std::vector<std::unique_ptr<ListAsArray<T>>>);
+    std::unique_ptr<ListAsArray> newMatrix(new ListAsVector());
     this->matrix = std::move(newMatrix);
   };
   /*
@@ -28,26 +27,28 @@ public:
    * Constructor parsed with the ListAsArray object to use.
    * @param The ListAsArray object
    */
-  FixedSizedMatrix(const ListAsArray<T> &);
+  // FixedSizedMatrix(const ListAsArray **&l) { this->matrix = l; };
   /*
    * Deconstructor.
    * The deconstructor responsible for freeing back memory.
    */
-  ~FixedSizedMatrix() { this->matrix.reset(); };
+  ~FixedSizedMatrix(){};
   /*
    * Shrink row.
    * Shrinks the row by a specifide size.
    * @param An integer indicating the number of rows to shrink.
    */
   void shrinkRow(int amount) {
-    if (this->matrix->capacity() == 0) {
+    if (this->matrix->size() == 0) {
       return;
     }
-    this->matrix->resize(this->matrix->capacity() - amount);
-
-    for (auto &list : *(this->matrix)) // access by reference to avoid copying
-    {
-      for (size_t i = 0; i < amount; i++) {
+    for (size_t i = 0; i < amount; i++) {
+      this->matrix->shrink();
+    }
+    for (size_t i = 0; i < amount; i++) {
+      std::shared_ptr<ListAsArray> list =
+          std::dynamic_pointer_cast<ListAsArray>((*this->matrix)[i]);
+      for (size_t x = 0; x < amount; x++) {
         list->shrink();
       }
     }
@@ -58,14 +59,16 @@ public:
    * @param An integer indicating the number of columns to shrink.
    */
   void shrinkColumn(int amount) {
-    if (this->matrix->capacity() == 0) {
+    if (this->matrix->size() == 0) {
       return;
     }
-    this->matrix->resize(this->matrix->capacity() - amount);
-
-    for (auto &list : *(this->matrix)) // access by reference to avoid copying
-    {
-      for (size_t i = 0; i < amount; i++) {
+    for (size_t i = 0; i < amount; i++) {
+      this->matrix->shrink();
+    }
+    for (size_t i = 0; i < amount; i++) {
+      std::shared_ptr<ListAsArray> list =
+          std::dynamic_pointer_cast<ListAsArray>((*this->matrix)[i]);
+      for (size_t x = 0; x < amount; x++) {
         list->shrink();
       }
     }
@@ -78,16 +81,16 @@ public:
   void growRow(int amount) {
     // Grow the rows;
     for (size_t i = 0; i < amount; i++) {
-      std::unique_ptr<ListAsVector<T>> newRow(new ListAsVector<T>);
-      this->matrix->push_back(std::move(newRow));
+      std::unique_ptr<ListAsVector> newRow(new ListAsVector());
+      this->matrix->insert(std::move(newRow));
     }
 
     // Grow the columns.
-    for (auto &column : *(this->matrix)) // access by reference to avoid copying
-    {
-      for (size_t i = 0; i < (this->matrix->size() - (column->size() - 1));
-           i++) {
-        column->grow();
+    for (size_t i = 0; i < this->size(); i++) {
+      std::shared_ptr<ListAsArray> list =
+          std::dynamic_pointer_cast<ListAsArray>((*this->matrix)[i]);
+      for (size_t x = 0; x < (this->size() - (list->size() - 1)); x++) {
+        list->grow();
       }
     }
   };
@@ -99,16 +102,17 @@ public:
   void growColumn(int amount) {
     // Grow the rows;
     for (size_t i = 0; i < amount; i++) {
-      std::unique_ptr<ListAsVector<T>> newRow(new ListAsVector<T>);
-      this->matrix->push_back(std::move(newRow));
+      std::unique_ptr<ListAsVector> newRow(new ListAsVector());
+      // std::shared_ptr<ListAsVector> newRow(new ListAsVector);
+      this->matrix->insert(std::move(newRow));
     }
 
     // Grow the columns.
-    for (auto &column : *(this->matrix)) // access by reference to avoid copying
-    {
-      for (size_t i = 0; i < (this->matrix->size() - (column->size() - 1));
-           i++) {
-        column->grow();
+    for (size_t i = 0; i < this->size(); i++) {
+      std::shared_ptr<ListAsArray> list =
+          std::dynamic_pointer_cast<ListAsArray>((*this->matrix)[i]);
+      for (size_t x = 0; x < (this->size() - (list->size() - 1)); x++) {
+        list->grow();
       }
     }
   };
@@ -117,7 +121,12 @@ public:
    * Returns the object at index.
    * @param An integer indicating the index.
    */
-  ListAsArray<T> &operator[](int i) { return *this->matrix->at(i); };
+  std::shared_ptr<List> operator[](int i) {
+    // std::shared_ptr<List> l =
+    //    std::dynamic_pointer_cast<List>((*this->matrix)[i]);
+    // return l;
+    return std::static_pointer_cast<List>((*this->matrix)[i]);
+  };
 
   void print(std::ostream & = std::cout) const {};
   int size() { return this->matrix->size(); }

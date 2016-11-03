@@ -35,8 +35,7 @@ TEST_CASE("List as vector tests", "[ListAsVector]") {
   std::shared_ptr<Object> o2 = std::make_shared<NullObject>(NullObject());
   std::shared_ptr<Object> o3 = std::make_shared<NullObject>(NullObject());
 
-  std::unique_ptr<List<std::shared_ptr<Object>>> l(
-      new ListAsVector<std::shared_ptr<Object>>());
+  std::unique_ptr<List> l(new ListAsVector());
 
   l->insert(o1);
   l->insert(o2);
@@ -131,8 +130,7 @@ TEST_CASE("List as dynamic array list tests", "[dynamicArrayList]") {
   std::shared_ptr<Object> o2 = std::make_shared<NullObject>(NullObject());
   std::shared_ptr<Object> o3 = std::make_shared<NullObject>(NullObject());
 
-  std::unique_ptr<List<std::shared_ptr<Object>>> l(
-      new DynamicArrayList<std::shared_ptr<Object>>());
+  std::unique_ptr<List> l(new DynamicArrayList());
 
   l->insert((o1));
   l->insert((o2));
@@ -223,8 +221,7 @@ TEST_CASE("List as single linked list tests", "[listAsSLL]") {
   std::shared_ptr<Object> o2 = std::make_shared<NullObject>(NullObject());
   std::shared_ptr<Object> o3 = std::make_shared<NullObject>(NullObject());
 
-  std::unique_ptr<List<std::shared_ptr<Object>>> l(
-      new ListAsSLL<std::shared_ptr<Object>>());
+  std::unique_ptr<List> l(new ListAsSLL());
 
   l->insert((o1));
   l->insert((o2));
@@ -318,8 +315,7 @@ TEST_CASE("List as doubly linked list tests", "[listAsDLL]") {
   std::shared_ptr<Object> o2 = std::make_shared<NullObject>(NullObject());
   std::shared_ptr<Object> o3 = std::make_shared<NullObject>(NullObject());
 
-  std::unique_ptr<List<std::shared_ptr<Object>>> l(
-      new ListAsDLL<std::shared_ptr<Object>>());
+  std::unique_ptr<List> l(new ListAsDLL());
 
   l->insert(o1);
   l->insert(o2);
@@ -410,8 +406,7 @@ TEST_CASE("List as doubly linked list tests", "[listAsDLL]") {
 }
 
 TEST_CASE("Fixed sized matrix tests", "[fixedSizedMatrix]") {
-  std::unique_ptr<FixedSizedMatrix<std::shared_ptr<Object>>> m(
-      new FixedSizedMatrix<std::shared_ptr<Object>>());
+  std::unique_ptr<FixedSizedMatrix> m(new FixedSizedMatrix());
 
   SECTION("Growing a row should should work") {
     m->growRow(1);
@@ -419,40 +414,43 @@ TEST_CASE("Fixed sized matrix tests", "[fixedSizedMatrix]") {
   }
   SECTION("Growing a row should grow a column") {
     m->growRow(1);
-    int size = (*m)[0].size();
+    int size = (*m)[0]->size();
     // Column size.
     REQUIRE(size == 1);
 
     m->growRow(1);
-    size = (*m)[0].size();
+    size = (*m)[0]->size();
     // Column size.
     REQUIRE(size == 2);
-    size = (*m)[1].size();
+    size = (*m)[1]->size();
     REQUIRE(size == 2);
   }
   SECTION("Growing a column should grow a row") {
     m->growColumn(1);
-    int size = (*m)[0].size();
+    int size = (*m)[0]->size();
+
     REQUIRE(size == 1);
     m->growColumn(1);
-    size = (*m)[1].size();
+    size = (*m)[0]->size();
+    REQUIRE(size == 2);
+    size = (*m)[1]->size();
     REQUIRE(size == 2);
   }
   SECTION("Shrinking a row should shrink both rows and columns") {
     m->growRow(2);
-    int size = (*m)[0].size();
+    int size = (*m)[0]->size();
     REQUIRE(size == 2);
-    size = (*m)[1].size();
+    size = (*m)[1]->size();
     REQUIRE(size == 2);
 
     m->shrinkRow(1);
-    size = (*m)[0].size();
+    size = (*m)[0]->size();
     REQUIRE(size == 1);
 
     bool thrown = false;
 
     try {
-      size = (*m)[1].size();
+      size = (*m)[1]->size();
     } catch (...) {
       thrown = true;
     }
@@ -460,19 +458,19 @@ TEST_CASE("Fixed sized matrix tests", "[fixedSizedMatrix]") {
   }
   SECTION("Shrinking a column should shrink both rows and columns") {
     m->growColumn(2);
-    int size = (*m)[0].size();
+    int size = (*m)[0]->size();
     REQUIRE(size == 2);
-    size = (*m)[1].size();
+    size = (*m)[1]->size();
     REQUIRE(size == 2);
 
     m->shrinkColumn(1);
-    size = (*m)[0].size();
+    size = (*m)[0]->size();
     REQUIRE(size == 1);
 
     bool thrown = false;
 
     try {
-      size = (*m)[1].size();
+      size = (*m)[1]->size();
     } catch (...) {
       thrown = true;
     }
