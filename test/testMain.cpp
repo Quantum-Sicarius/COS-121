@@ -2,7 +2,6 @@
 #include "../libs/dynamicArrayList.hpp"
 #include "../libs/dynamicSizedMatrix.hpp"
 #include "../libs/fixedSizedMatrix.hpp"
-#include "../libs/flexiMatrix.hpp"
 #include "../libs/integer.hpp"
 #include "../libs/listAsDLL.hpp"
 #include "../libs/listAsSLL.hpp"
@@ -405,7 +404,7 @@ TEST_CASE("List as doubly linked list tests", "[listAsDLL]") {
   o3.reset();
 }
 
-TEST_CASE("Fixed sized matrix tests", "[fixedSizedMatrix]") {
+TEST_CASE("Fixed sized matrix (Vector) tests", "[fixedSizedMatrix]") {
   std::unique_ptr<FixedSizedMatrix> m(new FixedSizedMatrix());
 
   SECTION("Growing a row should should work") {
@@ -457,13 +456,154 @@ TEST_CASE("Fixed sized matrix tests", "[fixedSizedMatrix]") {
     REQUIRE(thrown == true);
   }
   SECTION("Shrinking a column should shrink both rows and columns") {
-    m->growColumn(2);
+    m->growColumn(0, 2);
     int size = (*m)[0]->size();
     REQUIRE(size == 2);
     size = (*m)[1]->size();
     REQUIRE(size == 2);
 
-    m->shrinkColumn(1);
+    m->shrinkColumn(0, 1);
+    size = (*m)[0]->size();
+    REQUIRE(size == 1);
+
+    bool thrown = false;
+
+    try {
+      size = (*m)[1]->size();
+    } catch (...) {
+      thrown = true;
+    }
+    REQUIRE(thrown == true);
+  }
+}
+
+TEST_CASE("Fixed sized matrix (DynamicArray) tests", "[fixedSizedMatrix]") {
+  std::unique_ptr<FixedSizedMatrix> m(new FixedSizedMatrix(1));
+
+  SECTION("Growing a row should should work") {
+    m->growRow();
+    REQUIRE(m->size() == 1);
+  }
+  SECTION("Growing a row should grow a column") {
+    m->growRow(1);
+    int size = (*m)[0]->size();
+    // Column size.
+    REQUIRE(size == 1);
+
+    m->growRow(1);
+    size = (*m)[0]->size();
+    // Column size.
+    REQUIRE(size == 2);
+    size = (*m)[1]->size();
+    REQUIRE(size == 2);
+  }
+  SECTION("Growing a column should grow a row") {
+    m->growColumn(0, 1);
+    int size = (*m)[0]->size();
+
+    REQUIRE(size == 1);
+    m->growColumn(0, 1);
+    size = (*m)[0]->size();
+    REQUIRE(size == 2);
+    size = (*m)[1]->size();
+    REQUIRE(size == 2);
+  }
+  SECTION("Shrinking a row should shrink both rows and columns") {
+    m->growRow(2);
+    int size = (*m)[0]->size();
+    REQUIRE(size == 2);
+    size = (*m)[1]->size();
+    REQUIRE(size == 2);
+
+    m->shrinkRow();
+    size = (*m)[0]->size();
+    REQUIRE(size == 1);
+
+    bool thrown = false;
+
+    try {
+      size = (*m)[1]->size();
+    } catch (...) {
+      thrown = true;
+    }
+    REQUIRE(thrown == true);
+  }
+  SECTION("Shrinking a column should shrink both rows and columns") {
+    m->growColumn(0, 2);
+    int size = (*m)[0]->size();
+    REQUIRE(size == 2);
+    size = (*m)[1]->size();
+    REQUIRE(size == 2);
+
+    m->shrinkColumn(0, 1);
+    size = (*m)[0]->size();
+    REQUIRE(size == 1);
+
+    bool thrown = false;
+
+    try {
+      size = (*m)[1]->size();
+    } catch (...) {
+      thrown = true;
+    }
+    REQUIRE(thrown == true);
+  }
+}
+
+TEST_CASE("Dynamic sized matrix tests (SLL)", "[fixedSizedMatrix]") {
+  std::unique_ptr<DynamicSizedMatrix> m(new DynamicSizedMatrix(0));
+
+  SECTION("Growing a row should should work") {
+    m->growRow(1);
+    REQUIRE(m->size() == 1);
+  }
+  SECTION("Growing a row should not grow a column") {
+    m->growRow(1);
+    int size = (*m)[0]->size();
+    // Column size.
+    REQUIRE(size == 0);
+
+    m->growRow(1);
+    size = (*m)[0]->size();
+    // Column size.
+    REQUIRE(size == 0);
+    size = (*m)[1]->size();
+    REQUIRE(size == 0);
+  }
+  SECTION("Growing a column should not grow a row") {
+    m->growRow(1);
+    m->growColumn(0, 1);
+    int size = (*m)[0]->size();
+    REQUIRE(size == 1);
+
+    m->growColumn(0, 1);
+    size = (*m)[0]->size();
+    REQUIRE(size == 2);
+
+    bool thrown = false;
+
+    try {
+      size = (*m)[1]->size();
+    } catch (...) {
+      thrown = true;
+    }
+    REQUIRE(thrown == true);
+  }
+  SECTION("Shrinking a row should not shrink both rows and columns") {
+    m->growRow(2);
+
+    int size = (*m)[0]->size();
+    REQUIRE(size == 0);
+    size = (*m)[1]->size();
+    REQUIRE(size == 0);
+  }
+  SECTION("Shrinking a column should not shrink both rows and columns") {
+    m->growRow(1);
+    m->growColumn(0, 2);
+    int size = (*m)[0]->size();
+    REQUIRE(size == 2);
+
+    m->shrinkColumn(0, 1);
     size = (*m)[0]->size();
     REQUIRE(size == 1);
 

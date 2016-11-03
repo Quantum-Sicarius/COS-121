@@ -24,9 +24,10 @@ public:
   /*
    * Shrink column.
    * Shrinks the column by a specifide size.
-   * @param An integer indicating the number of columns to shrink.
+   * @param row An integer indicating the row.
+   * @param amount An integer indicating the number of columns to shrink.
    */
-  virtual void shrinkColumn(int) = 0;
+  virtual void shrinkColumn(int, int) = 0;
   /*
    * Grow row.
    * Grows the row by a specifide size.
@@ -36,9 +37,10 @@ public:
   /*
    * Grow column.
    * Grows the column by a specifide size.
+   * @param row An integer indicating the row.
    * @param An integer indicating the number of columns to grow.
    */
-  virtual void growColumn(int) = 0;
+  virtual void growColumn(int, int) = 0;
   /*
    * Index operator.
    * Returns the object at index.

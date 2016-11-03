@@ -15,7 +15,7 @@ ifndef CXXFLAGS
  RUNFLAGS := ${runflags.${BUILD}}
 endif
 
-OBJECTS = $(addprefix build/,$(notdir object.o nullObject.o auditorium.o integer.o dynamicSizedMatrix.o flexiMatrix.o))
+OBJECTS = $(addprefix build/,$(notdir object.o nullObject.o auditorium.o integer.o))
 OBJECTS_TEST = $(OBJECTS) build/catchConfig.o build/testMain.o
 
 # Make build directory.
@@ -43,10 +43,6 @@ build/auditorium.o: libs/object.hpp libs/auditorium.hpp src/auditorium.cpp
 	$(CXX) $(CXXFLAGS) -c src/auditorium.cpp -o $@
 build/integer.o: libs/object.hpp libs/integer.hpp src/integer.cpp
 	$(CXX) $(CXXFLAGS) -c src/integer.cpp -o $@
-build/dynamicSizedMatrix.o: libs/matrix.hpp libs/dynamicSizedMatrix.hpp src/dynamicSizedMatrix.cpp
-	$(CXX) $(CXXFLAGS) -c src/dynamicSizedMatrix.cpp -o $@
-build/flexiMatrix.o: libs/matrix.hpp libs/flexiMatrix.hpp src/flexiMatrix.cpp
-	$(CXX) $(CXXFLAGS) -c src/flexiMatrix.cpp -o $@
 
 .PHONY: clean
 clean:

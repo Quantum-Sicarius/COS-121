@@ -1,6 +1,7 @@
 #ifndef FIXEDSIZEDMATRIX_H
 #define FIXEDSIZEDMATRIX_H
 
+#include "dynamicArrayList.hpp"
 #include "listAsArray.hpp"
 #include "listAsVector.hpp"
 #include "matrix.hpp"
@@ -10,6 +11,9 @@
  * A matrix class using ListAsVector and/or DynamicArrayList lists.
  */
 class FixedSizedMatrix : public Matrix {
+private:
+  int type = 0;
+
 protected:
   int compareTo(Object const &) const { return 0; };
   std::unique_ptr<ListAsArray> matrix;
@@ -18,9 +22,16 @@ public:
   /*
    * Default constructor.
    */
-  FixedSizedMatrix() {
-    std::unique_ptr<ListAsArray> newMatrix(new ListAsVector());
-    this->matrix = std::move(newMatrix);
+  FixedSizedMatrix(int type = 0) {
+    this->type = type;
+
+    if (type == 1) {
+      std::unique_ptr<ListAsArray> newMatrix(new DynamicArrayList());
+      this->matrix = std::move(newMatrix);
+    } else {
+      std::unique_ptr<ListAsArray> newMatrix(new ListAsVector());
+      this->matrix = std::move(newMatrix);
+    }
   };
   /*
    * Constructor.
@@ -38,7 +49,7 @@ public:
    * Shrinks the row by a specifide size.
    * @param An integer indicating the number of rows to shrink.
    */
-  void shrinkRow(int amount) {
+  void shrinkRow(int amount = 1) {
     if (this->matrix->size() == 0) {
       return;
     }
@@ -58,7 +69,7 @@ public:
    * Shrinks the column by a specifide size.
    * @param An integer indicating the number of columns to shrink.
    */
-  void shrinkColumn(int amount) {
+  void shrinkColumn(int row = 0, int amount = 1) {
     if (this->matrix->size() == 0) {
       return;
     }
@@ -78,11 +89,16 @@ public:
    * Grows the row by a specifide size.
    * @param An integer indicating the number of rows to grow.
    */
-  void growRow(int amount) {
+  void growRow(int amount = 1) {
     // Grow the rows;
     for (size_t i = 0; i < amount; i++) {
-      std::unique_ptr<ListAsVector> newRow(new ListAsVector());
-      this->matrix->insert(std::move(newRow));
+      if (type == 1) {
+        std::unique_ptr<ListAsArray> newRow(new ListAsVector());
+        this->matrix->insert(std::move(newRow));
+      } else {
+        std::unique_ptr<ListAsArray> newRow(new DynamicArrayList());
+        this->matrix->insert(std::move(newRow));
+      }
     }
 
     // Grow the columns.
@@ -99,12 +115,16 @@ public:
    * Grows the column by a specifide size.
    * @param An integer indicating the number of columns to grow.
    */
-  void growColumn(int amount) {
+  void growColumn(int row = 0, int amount = 1) {
     // Grow the rows;
     for (size_t i = 0; i < amount; i++) {
-      std::unique_ptr<ListAsVector> newRow(new ListAsVector());
-      // std::shared_ptr<ListAsVector> newRow(new ListAsVector);
-      this->matrix->insert(std::move(newRow));
+      if (type == 1) {
+        std::unique_ptr<ListAsArray> newRow(new ListAsVector());
+        this->matrix->insert(std::move(newRow));
+      } else {
+        std::unique_ptr<ListAsArray> newRow(new DynamicArrayList());
+        this->matrix->insert(std::move(newRow));
+      }
     }
 
     // Grow the columns.

@@ -10,11 +10,15 @@ private:
   struct Node {
     std::shared_ptr<Object> value;
     std::unique_ptr<Node> next;
+    Node *prev;
 
-    Node(std::shared_ptr<Object> v, std::unique_ptr<Node> n) {
+    Node(std::shared_ptr<Object> v, std::unique_ptr<Node> n, Node *p) {
       value = v;
       next = std::move(n);
+      prev = p;
     }
+
+    ~Node() {}
   };
 
 protected:
@@ -42,9 +46,9 @@ public:
     }
 
     if (this->head == nullptr) {
-      this->head.reset(new Node(o, nullptr));
+      this->head.reset(new Node(o, nullptr, nullptr));
     } else {
-      last_Node->next.reset(new Node(o, nullptr));
+      last_Node->next.reset(new Node(o, nullptr, last_Node));
     }
     ++this->listSize;
   }
@@ -62,6 +66,7 @@ public:
 
     auto current_Node = this->head.get();
     auto prev_Node = current_Node;
+    auto next_Node = current_Node;
     bool found = false;
 
     if (current_Node->value == o) {
@@ -78,6 +83,7 @@ public:
 
       prev_Node = current_Node;
       current_Node = current_Node->next.get();
+      next_Node = current_Node->next.get();
     }
 
     if (!found) {
@@ -91,6 +97,7 @@ public:
 
     // Fix pointers.
     if (prev_Node != nullptr) {
+      next_Node->prev = prev_Node;
       prev_Node->next = std::move(current_Node->next);
     }
 
