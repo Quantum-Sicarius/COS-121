@@ -25,7 +25,6 @@ public:
          *(this->theList)) // access by reference to avoid copying
     {
       if (object == o) {
-        object.reset();
         this->theList->erase(
             std::remove(this->theList->begin(), this->theList->end(), object),
             this->theList->end());
@@ -33,7 +32,7 @@ public:
     }
   }
 
-  void grow() { return; }
+  void grow() { this->theList->resize(this->theList->size() + 1); }
 
   void shrink() {
     if (this->theList->size() == 0) {

@@ -10,12 +10,12 @@ ifndef CXXFLAGS
  cxxflags.release := -Wall -pedantic -std=c++14
  cxxflags.debug := ${cxxflags.release} -fcolor-diagnostics -g -fsanitize=address -fstack-protector
  CXXFLAGS := ${cxxflags.${BUILD}}
- runflags.release := 
+ runflags.release :=
  runflags.debug := ASAN_OPTIONS=symbolize=1 ASAN_SYMBOLIZER_PATH=$(shell which llvm-symbolizer)
  RUNFLAGS := ${runflags.${BUILD}}
 endif
 
-OBJECTS = $(addprefix build/,$(notdir object.o nullObject.o auditorium.o integer.o dynamicSizedMatrix.o fixedSizedMatrix.o flexiMatrix.o))
+OBJECTS = $(addprefix build/,$(notdir object.o nullObject.o auditorium.o integer.o dynamicSizedMatrix.o flexiMatrix.o))
 OBJECTS_TEST = $(OBJECTS) build/catchConfig.o build/testMain.o
 
 # Make build directory.
@@ -45,8 +45,6 @@ build/integer.o: libs/object.hpp libs/integer.hpp src/integer.cpp
 	$(CXX) $(CXXFLAGS) -c src/integer.cpp -o $@
 build/dynamicSizedMatrix.o: libs/matrix.hpp libs/dynamicSizedMatrix.hpp src/dynamicSizedMatrix.cpp
 	$(CXX) $(CXXFLAGS) -c src/dynamicSizedMatrix.cpp -o $@
-build/fixedSizedMatrix.o: libs/matrix.hpp libs/fixedSizedMatrix.hpp src/fixedSizedMatrix.cpp
-	$(CXX) $(CXXFLAGS) -c src/fixedSizedMatrix.cpp -o $@
 build/flexiMatrix.o: libs/matrix.hpp libs/flexiMatrix.hpp src/flexiMatrix.cpp
 	$(CXX) $(CXXFLAGS) -c src/flexiMatrix.cpp -o $@
 

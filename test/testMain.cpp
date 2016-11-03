@@ -35,14 +35,8 @@ TEST_CASE("List as vector tests", "[ListAsVector]") {
   std::shared_ptr<Object> o2 = std::make_shared<NullObject>(NullObject());
   std::shared_ptr<Object> o3 = std::make_shared<NullObject>(NullObject());
 
-  // Object o1 = new NullObject();
-  // Object o2 = new NullObject();
-  // Object o3 = new NullObject();
-
   std::unique_ptr<List<std::shared_ptr<Object>>> l(
       new ListAsVector<std::shared_ptr<Object>>());
-
-  // std::unique_ptr<List<Object>> l(new ListAsVector<Object>());
 
   l->insert(o1);
   l->insert(o2);
@@ -415,8 +409,73 @@ TEST_CASE("List as doubly linked list tests", "[listAsDLL]") {
   o3.reset();
 }
 
-TEST_CASE("Fiex sized matrix tests", "[fixedSizedMatrix]") {
-  // Matrix *m = new FixedSizedMatrix();
-  //
-  // delete m;
+TEST_CASE("Fixed sized matrix tests", "[fixedSizedMatrix]") {
+  std::unique_ptr<FixedSizedMatrix<std::shared_ptr<Object>>> m(
+      new FixedSizedMatrix<std::shared_ptr<Object>>());
+
+  SECTION("Growing a row should should work") {
+    m->growRow(1);
+    REQUIRE(m->size() == 1);
+  }
+  SECTION("Growing a row should grow a column") {
+    m->growRow(1);
+    int size = (*m)[0].size();
+    // Column size.
+    REQUIRE(size == 1);
+
+    m->growRow(1);
+    size = (*m)[0].size();
+    // Column size.
+    REQUIRE(size == 2);
+    size = (*m)[1].size();
+    REQUIRE(size == 2);
+  }
+  SECTION("Growing a column should grow a row") {
+    m->growColumn(1);
+    int size = (*m)[0].size();
+    REQUIRE(size == 1);
+    m->growColumn(1);
+    size = (*m)[1].size();
+    REQUIRE(size == 2);
+  }
+  SECTION("Shrinking a row should shrink both rows and columns") {
+    m->growRow(2);
+    int size = (*m)[0].size();
+    REQUIRE(size == 2);
+    size = (*m)[1].size();
+    REQUIRE(size == 2);
+
+    m->shrinkRow(1);
+    size = (*m)[0].size();
+    REQUIRE(size == 1);
+
+    bool thrown = false;
+
+    try {
+      size = (*m)[1].size();
+    } catch (...) {
+      thrown = true;
+    }
+    REQUIRE(thrown == true);
+  }
+  SECTION("Shrinking a column should shrink both rows and columns") {
+    m->growColumn(2);
+    int size = (*m)[0].size();
+    REQUIRE(size == 2);
+    size = (*m)[1].size();
+    REQUIRE(size == 2);
+
+    m->shrinkColumn(1);
+    size = (*m)[0].size();
+    REQUIRE(size == 1);
+
+    bool thrown = false;
+
+    try {
+      size = (*m)[1].size();
+    } catch (...) {
+      thrown = true;
+    }
+    REQUIRE(thrown == true);
+  }
 }
