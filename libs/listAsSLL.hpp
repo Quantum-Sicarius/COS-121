@@ -2,6 +2,7 @@
 #define LISTASSLL_H
 
 #include "list.hpp"
+#include "nullObject.hpp"
 
 class ListAsSLL : public List {
 private:
@@ -16,6 +17,32 @@ private:
       next = std::move(n);
     }
   };
+
+  void shrinkList() {
+    // If list empty just return.
+    if (this->head == nullptr) {
+      return;
+    }
+
+    auto last_Node = this->head.get();
+    auto prev_Node = last_Node;
+
+    // Traverse entire list to the end.
+    while (last_Node->next != nullptr) {
+      // Save the previous node.
+      prev_Node = last_Node;
+      last_Node = last_Node->next.get();
+    }
+
+    prev_Node->next.reset();
+    if (prev_Node == this->head.get()) {
+      this->head.reset();
+    }
+
+    if (this->listSize != 0) {
+      --this->listSize;
+    }
+  }
 
 protected:
   int compareTo(Object const &) const { return 0; }
@@ -96,29 +123,15 @@ public:
     }
   }
 
-  void shrink() {
-    // If list empty just return.
-    if (this->head == nullptr) {
-      return;
+  void grow(int amount = 1) {
+    for (size_t i = 0; i < amount; i++) {
+      this->insert(std::make_unique<NullObject>(NullObject()));
     }
+  }
 
-    auto last_Node = this->head.get();
-    auto prev_Node = last_Node;
-
-    // Traverse entire list to the end.
-    while (last_Node->next != nullptr) {
-      // Save the previous node.
-      prev_Node = last_Node;
-      last_Node = last_Node->next.get();
-    }
-
-    prev_Node->next.reset();
-    if (prev_Node == this->head.get()) {
-      this->head.reset();
-    }
-
-    if (this->listSize != 0) {
-      --this->listSize;
+  void shrink(int amount = 1) {
+    for (size_t i = 0; i < amount; i++) {
+      this->shrinkList();
     }
   }
 

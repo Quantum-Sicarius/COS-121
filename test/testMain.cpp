@@ -1,4 +1,6 @@
+#include "../libs/auditoriumList.hpp"
 #include "../libs/catch.hpp"
+#include "../libs/developer.hpp"
 #include "../libs/dynamicArrayList.hpp"
 #include "../libs/dynamicSizedMatrix.hpp"
 #include "../libs/fixedSizedMatrix.hpp"
@@ -7,6 +9,7 @@
 #include "../libs/listAsSLL.hpp"
 #include "../libs/listAsVector.hpp"
 #include "../libs/nullObject.hpp"
+#include "../libs/variable.hpp"
 
 #include <memory>
 #include <sstream> // std::stringstream
@@ -424,6 +427,24 @@ TEST_CASE("Fixed sized matrix (Vector) tests", "[fixedSizedMatrix]") {
     size = (*m)[1]->size();
     REQUIRE(size == 2);
   }
+  SECTION("Mass grow rows") {
+    m->growRow(5);
+    int size = (*m)[0]->size();
+    // Column size.
+    REQUIRE(size == 5);
+    size = (*m)[1]->size();
+    // Column size.
+    REQUIRE(size == 5);
+    size = (*m)[2]->size();
+    // Column size.
+    REQUIRE(size == 5);
+    size = (*m)[3]->size();
+    // Column size.
+    REQUIRE(size == 5);
+    size = (*m)[4]->size();
+    // Column size.
+    REQUIRE(size == 5);
+  }
   SECTION("Growing a column should grow a row") {
     m->growColumn(1);
     int size = (*m)[0]->size();
@@ -496,6 +517,24 @@ TEST_CASE("Fixed sized matrix (DynamicArray) tests", "[fixedSizedMatrix]") {
     REQUIRE(size == 2);
     size = (*m)[1]->size();
     REQUIRE(size == 2);
+  }
+  SECTION("Mass grow rows") {
+    m->growRow(5);
+    int size = (*m)[0]->size();
+    // Column size.
+    REQUIRE(size == 5);
+    size = (*m)[1]->size();
+    // Column size.
+    REQUIRE(size == 5);
+    size = (*m)[2]->size();
+    // Column size.
+    REQUIRE(size == 5);
+    size = (*m)[3]->size();
+    // Column size.
+    REQUIRE(size == 5);
+    size = (*m)[4]->size();
+    // Column size.
+    REQUIRE(size == 5);
   }
   SECTION("Growing a column should grow a row") {
     m->growColumn(0, 1);
@@ -615,5 +654,63 @@ TEST_CASE("Dynamic sized matrix tests (SLL)", "[fixedSizedMatrix]") {
       thrown = true;
     }
     REQUIRE(thrown == true);
+  }
+}
+
+TEST_CASE("Auditorium tests (Fixed)", "[auditorium]") {
+  std::unique_ptr<Auditorium> a(new Fixed("Fixed Auditorium 1"));
+
+  REQUIRE(a->getName() == "Fixed Auditorium 1");
+
+  SECTION("Give a fixed auditorium we should be able to add rows") {
+    // Add 5 rows.
+    a->addRow(5);
+
+    SECTION("All seats should be empty.") {
+      // Row 1, Column 3.
+      for (size_t i = 0; i < 5; i++) {
+        for (size_t x = 0; x < 5; x++) {
+          std::shared_ptr<Seat> s = a->getSeat(i, x);
+          REQUIRE(s->isTaken() == false);
+        }
+      }
+    }
+
+    SECTION("We should not be able to ask for a seat that doesn't exit") {
+      REQUIRE_THROWS(a->getSeat(100, 1));
+    }
+  }
+}
+
+TEST_CASE("Auditorium tests (Variable)", "[auditorium]") {
+  std::unique_ptr<Auditorium> a(new Variable("Variable Auditorium 1"));
+
+  REQUIRE(a->getName() == "Variable Auditorium 1");
+
+  SECTION("Given a Variable auditorium we should be able to add rows") {
+    // Add 5 rows.
+    a->addRow(5);
+
+    SECTION("In a variable auditorium the columns should not have grown") {
+      REQUIRE_THROWS(a->getSeat(0, 0));
+    }
+
+    SECTION("A variable auditorium should have modifiable rows") {
+      a->addSeatInRow(0, 2);
+      a->addSeatInRow(1, 1);
+      a->addSeatInRow(2, 0);
+      a->addSeatInRow(3, 6);
+      a->addSeatInRow(4, 0);
+
+      REQUIRE(a->getSeat(0, 0)->isTaken() == false);
+      REQUIRE(a->getSeat(0, 1)->isTaken() == false);
+      REQUIRE(a->getSeat(1, 0)->isTaken() == false);
+      REQUIRE_THROWS(a->getSeat(2, 0));
+      REQUIRE_THROWS(a->getSeat(4, 0));
+    }
+
+    SECTION("We should not be able to ask for a seat that doesn't exit") {
+      REQUIRE_THROWS(a->getSeat(100, 1));
+    }
   }
 }

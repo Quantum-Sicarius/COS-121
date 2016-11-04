@@ -5,12 +5,12 @@
 #include "object.hpp"
 #include "person.hpp"
 
-class NullObjectPerson : public Person {
+class NullPersonObject : public Person {
 protected:
   int compareTo(Object const &) const { return 0; };
 
 public:
-  bool isNull(void) const { return false; };
+  bool isNull(void) const { return true; };
   int compare(Object const &) const { return 0; };
   void print(std::ostream & = std::cout) const {};
 };

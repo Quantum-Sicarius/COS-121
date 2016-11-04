@@ -109,7 +109,9 @@ public:
     }
   }
 
-  void shrink() {
+  void grow(int amount = 1) {}
+
+  void shrink(int amount = 1) {
     // If list empty just return.
     if (this->head == nullptr) {
       return;

@@ -105,8 +105,14 @@ public:
     for (size_t i = 0; i < this->size(); i++) {
       std::shared_ptr<ListAsArray> list =
           std::dynamic_pointer_cast<ListAsArray>((*this->matrix)[i]);
-      for (size_t x = 0; x < (this->size() - (list->size() - 1)); x++) {
-        list->grow();
+      if (list->size() == 0) {
+        for (size_t x = 0; x < (this->size()); x++) {
+          list->grow();
+        }
+      } else {
+        for (size_t x = 0; x < (this->size() - (list->size() - 1)); x++) {
+          list->grow();
+        }
       }
     }
   };
@@ -131,8 +137,14 @@ public:
     for (size_t i = 0; i < this->size(); i++) {
       std::shared_ptr<ListAsArray> list =
           std::dynamic_pointer_cast<ListAsArray>((*this->matrix)[i]);
-      for (size_t x = 0; x < (this->size() - (list->size() - 1)); x++) {
-        list->grow();
+      if (list->size() == 0) {
+        for (size_t x = 0; x < (this->size()); x++) {
+          list->grow();
+        }
+      } else {
+        for (size_t x = 0; x < (this->size() - (list->size() - 1)); x++) {
+          list->grow();
+        }
       }
     }
   };

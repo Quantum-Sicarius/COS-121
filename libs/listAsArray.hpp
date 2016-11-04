@@ -5,7 +5,6 @@
 
 class ListAsArray : public List {
 public:
-  virtual void grow() = 0;
   virtual int size() = 0;
   virtual void insert(std::shared_ptr<Object>) = 0;
   virtual void remove(std::shared_ptr<Object>) = 0;

@@ -2,6 +2,7 @@
 #define DYNAMICARRAYLIST_H
 
 #include "listAsArray.hpp"
+#include "nullObject.hpp"
 #include "object.hpp"
 
 class DynamicArrayList : public ListAsArray {
@@ -48,7 +49,7 @@ public:
     }
     this->resize(this->listSize - 1);
   }
-  void grow() {
+  void grow(int amount = 1) {
     // Object **newList = new Object *[(this->listSize + 1)];
     std::unique_ptr<std::shared_ptr<Object>[]> newList(
         new std::shared_ptr<Object>[this->listSize + 1]);
@@ -56,13 +57,14 @@ public:
     for (size_t i = 0; i < this->listSize; i++) {
       newList[i] = this->theList[i];
     }
+    newList[this->listSize] = std::make_unique<NullObject>(NullObject());
 
     this->theList.reset();
     ++this->listSize;
 
     this->theList = std::move(newList);
   }
-  void shrink() {
+  void shrink(int amount = 1) {
     if (this->listSize == 0) {
       return;
     }

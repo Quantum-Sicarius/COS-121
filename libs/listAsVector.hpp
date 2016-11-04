@@ -34,16 +34,20 @@ public:
     }
   }
 
-  void grow() {
-    std::unique_ptr<Object> newNullObject(new NullObject());
-    this->insert(std::move(newNullObject));
+  void grow(int amount = 1) {
+    for (size_t i = 0; i < amount; i++) {
+      std::unique_ptr<Object> newNullObject(new NullObject());
+      this->insert(std::move(newNullObject));
+    }
   }
 
-  void shrink() {
-    if (this->theList->size() == 0) {
-      return;
+  void shrink(int amount = 1) {
+    for (size_t i = 0; i < amount; i++) {
+      if (this->theList->size() == 0) {
+        return;
+      }
+      this->theList->resize(this->theList->size() - 1);
     }
-    this->theList->resize(this->theList->size() - 1);
   }
 
   int size() { return this->theList->size(); }
