@@ -2,11 +2,15 @@
 #define APPLICATION_H
 
 #include "complexList.hpp"
+#include "termbox.h"
 #include <memory>
 
 class Application {
 private:
   std::unique_ptr<ComplexList> complexes_;
+
+public:
+  Application() { tb_init(); }
 };
 
 class Subject {
