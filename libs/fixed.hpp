@@ -32,7 +32,7 @@ public:
     this->setToSeat();
   }
 
-  void addSeatInRow(int row, int amount) { return; }
+  void addSeatsInRow(int row, int amount) { return; }
 
   std::shared_ptr<Seat> getSeat(int row, int col) {
     return std::dynamic_pointer_cast<Seat>((*(*this->layout)[row])[col]);

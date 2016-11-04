@@ -23,7 +23,7 @@ public:
   void setState(std::string s) { this->state_ = s; }
 
   virtual void addRow(int) = 0;
-  virtual void addSeatInRow(int row, int amount) = 0;
+  virtual void addSeatsInRow(int row, int amount) = 0;
   virtual std::shared_ptr<Seat> getSeat(int row, int col) = 0;
 };
 

@@ -683,7 +683,7 @@ TEST_CASE("Auditorium tests (Fixed)", "[auditorium]") {
 }
 
 TEST_CASE("Auditorium tests (Variable)", "[auditorium]") {
-  std::unique_ptr<Auditorium> a(new Variable("Variable Auditorium 1"));
+  std::unique_ptr<Variable> a(new Variable("Variable Auditorium 1"));
 
   REQUIRE(a->getName() == "Variable Auditorium 1");
 
@@ -696,11 +696,11 @@ TEST_CASE("Auditorium tests (Variable)", "[auditorium]") {
     }
 
     SECTION("A variable auditorium should have modifiable rows") {
-      a->addSeatInRow(0, 2);
-      a->addSeatInRow(1, 1);
-      a->addSeatInRow(2, 0);
-      a->addSeatInRow(3, 6);
-      a->addSeatInRow(4, 0);
+      a->addSeatsInRow(0, 2);
+      a->addSeatsInRow(1, 1);
+      a->addSeatsInRow(2, 0);
+      a->addSeatsInRow(3, 6);
+      a->addSeatsInRow(4, 0);
 
       REQUIRE(a->getSeat(0, 0)->isTaken() == false);
       REQUIRE(a->getSeat(0, 1)->isTaken() == false);
@@ -709,8 +709,27 @@ TEST_CASE("Auditorium tests (Variable)", "[auditorium]") {
       REQUIRE_THROWS(a->getSeat(4, 0));
     }
 
+    SECTION("A variable auditorium can have seats in the middle of no where") {
+      a->addSeat(3, 3);
+      REQUIRE(a->getSeat(3, 3)->isTaken() == false);
+      REQUIRE_THROWS(a->getSeat(3, 2));
+    }
+
     SECTION("We should not be able to ask for a seat that doesn't exit") {
       REQUIRE_THROWS(a->getSeat(100, 1));
     }
   }
+}
+
+TEST_CASE("Auditorium developer tests", "[developer]") {
+  std::shared_ptr<AuditoriumList> list(new AuditoriumList());
+  std::unique_ptr<Developer> d(new Developer(list));
+
+  d->newFixedAuditorium(5, "Fixed Auditorium 1");
+
+  REQUIRE(list->at(0)->getName() == "Fixed Auditorium 1");
+
+  d->newVariableAuditorium(5, "Variable Auditorium 1");
+
+  REQUIRE(list->at(1)->getName() == "Variable Auditorium 1");
 }
