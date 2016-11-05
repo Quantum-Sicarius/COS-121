@@ -2,15 +2,38 @@
 #define APPLICATION_H
 
 #include "complexList.hpp"
-#include "termbox.h"
+#include "developer.hpp"
+#include "reservation.hpp"
 #include <memory>
+#include <menu.h>
+#include <ncurses.h>
 
 class Application {
 private:
-  std::unique_ptr<ComplexList> complexes_;
+  std::unique_ptr<ComplexList> _complexes;
+  std::unique_ptr<Reservation> _reservations;
 
 public:
-  Application() { tb_init(); }
+  Application() {
+    this->_complexes = std::make_unique<ComplexList>(ComplexList());
+
+    std::unique_ptr<Complex> c1(new Complex("Complex 1"));
+    std::unique_ptr<Complex> c2(new Complex("Complex 2"));
+    std::unique_ptr<Complex> c3(new Complex("Complex 3"));
+
+    this->_complexes->appendComplex(std::move(c1));
+    this->_complexes->appendComplex(std::move(c2));
+    this->_complexes->appendComplex(std::move(c3));
+  }
+
+  void start();
+  void newComplexForm();
+  void listComplexes();
+  void listAuditoriums(std::shared_ptr<Complex>);
+  void viewComplex(std::shared_ptr<Complex>);
+  void viewAuditorium(std::shared_ptr<Auditorium>);
+  void viewSeats(std::shared_ptr<Auditorium>);
+  void addSeats(std::shared_ptr<Auditorium>);
 };
 
 class Subject {
@@ -43,11 +66,6 @@ protected:
   Subject *getSubject() { return this->model; }
   int getDivisor() { return this->denom; }
 };
-
-void Subject::notify() {
-  for (int i = 0; i < views.size(); i++)
-    this->views[i]->update();
-}
 
 class CommandLineObserver : public Observer {
 public:

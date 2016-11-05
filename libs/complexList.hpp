@@ -16,6 +16,12 @@ public:
             std::vector<std::shared_ptr<Complex>>());
   }
   void appendComplex(std::shared_ptr<Complex> c) {
+    for (size_t i = 0; i < this->_complexList->size(); i++) {
+      if (c->getName() == this->_complexList->at(i)->getName()) {
+        throw "You can not have a complex with the same name";
+      }
+    }
+
     this->_complexList->push_back(std::move(c));
   }
   void deleteComplex(int i) {

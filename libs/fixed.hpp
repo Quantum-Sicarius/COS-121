@@ -32,6 +32,9 @@ public:
     this->setToSeat();
   }
 
+  int getRows() { return this->layout->size(); }
+  int getColSize(int i) { return (*this->layout)[i]->size(); }
+
   void addSeatsInRow(int row, int amount) { return; }
 
   std::shared_ptr<Seat> getSeat(int row, int col) {

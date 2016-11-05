@@ -79,6 +79,9 @@ public:
     }
   }
 
+  int getRows() { return this->layout->size(); }
+  int getColSize(int i) { return (*this->layout)[i]->size(); }
+
   ~Variable() { this->layout.reset(); }
 
   bool isNull(void) const { return false; }

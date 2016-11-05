@@ -24,6 +24,8 @@ public:
 
   virtual void addRow(int) = 0;
   virtual void addSeatsInRow(int row, int amount) = 0;
+  virtual int getRows() = 0;
+  virtual int getColSize(int) = 0;
   virtual std::shared_ptr<Seat> getSeat(int row, int col) = 0;
 };
 

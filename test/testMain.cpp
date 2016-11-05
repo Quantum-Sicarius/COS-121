@@ -733,3 +733,16 @@ TEST_CASE("Auditorium developer tests", "[developer]") {
 
   REQUIRE(list->at(1)->getName() == "Variable Auditorium 1");
 }
+
+TEST_CASE("Complex tests", "[complex]") {
+  std::shared_ptr<AuditoriumList> list(new AuditoriumList());
+  std::unique_ptr<Developer> d(new Developer(list));
+
+  d->newFixedAuditorium(5, "Fixed Auditorium 1");
+
+  REQUIRE(list->at(0)->getName() == "Fixed Auditorium 1");
+
+  d->newVariableAuditorium(5, "Variable Auditorium 1");
+
+  REQUIRE(list->at(1)->getName() == "Variable Auditorium 1");
+}

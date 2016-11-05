@@ -16,6 +16,11 @@ public:
             std::vector<std::shared_ptr<Auditorium>>());
   }
   void appendAuditorium(std::shared_ptr<Auditorium> a) {
+    for (size_t i = 0; i < this->auditoriumList_->size(); i++) {
+      if (a->getName() == this->auditoriumList_->at(i)->getName()) {
+        throw "You can not have an auditorium with the same name";
+      }
+    }
     this->auditoriumList_->push_back(std::move(a));
   }
   void deleteAuditorium(int i) {

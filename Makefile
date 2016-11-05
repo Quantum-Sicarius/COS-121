@@ -15,21 +15,25 @@ ifndef CXXFLAGS
  RUNFLAGS := ${runflags.${BUILD}}
 endif
 
-LIBS =  -L bin/ -l termbox
+LIBS = -lform -lpanel -lmenu -lncurses
 OBJECTS = $(addprefix build/,$(notdir object.o nullObject.o auditorium.o integer.o))
 OBJECTS_TEST = $(OBJECTS) build/catchConfig.o build/testMain.o
+OBJECTS_MAIN = $(OBJECTS) build/main.o build/application.o
 
 # Make build directory.
 $(shell mkdir -p build)
 
 .PHONY: test.out
 test.out: $(OBJECTS_TEST)
-	$(CXX) $(CXXFLAGS) $(OBJECTS_TEST) $(LIBS) -o $@
+	$(CXX) $(CXXFLAGS) $(OBJECTS_TEST) -o $@
 
 .PHONY: main.out
-main.out: src/main.cpp
-	$(CXX) $(CXXFLAGS) $(OBJECTS_MAIN) $(LIBS) -c src/main.cpp -o $@
-
+main.out: $(OBJECTS_MAIN)
+	$(CXX) $(CXXFLAGS) $(OBJECTS_MAIN) $(LIBS) -o $@
+build/application.o:
+	$(CXX) $(CXXFLAGS) -c src/application.cpp -o $@
+build/main.o:
+	$(CXX) $(CXXFLAGS) -c src/main.cpp -o $@
 build/testMain.o: test/testMain.cpp
 	$(CXX) $(CXXFLAGS) -c test/testMain.cpp -o $@
 build/catchConfig.o: libs/catch.hpp test/catchConfig.cpp
