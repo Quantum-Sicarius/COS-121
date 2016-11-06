@@ -1,4 +1,4 @@
-CXX = clang++
+CXX = g++
 BUILD := debug
 
 # Check if the COMPILER variable is set. If it is set the variable CXX to it.
@@ -7,8 +7,8 @@ ifneq ($(strip $(COMPILER)),)
 endif
 
 ifndef CXXFLAGS
- cxxflags.release := -Wall -pedantic -std=c++14
- cxxflags.debug := ${cxxflags.release} -fcolor-diagnostics -g -fsanitize=address -fstack-protector
+ cxxflags.release := -std=c++14
+ cxxflags.debug := ${cxxflags.release} -Wall -pedantic -fcolor-diagnostics -g -fsanitize=address -fstack-protector
  CXXFLAGS := ${cxxflags.${BUILD}}
  runflags.release :=
  runflags.debug := ASAN_OPTIONS=symbolize=1 ASAN_SYMBOLIZER_PATH=$(shell which llvm-symbolizer)
