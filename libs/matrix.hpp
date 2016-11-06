@@ -11,11 +11,6 @@
 class Matrix : public Container {
 public:
   /*
-   * Virtual Deconstructor.
-   * The abstract deconstructor.
-   */
-  virtual ~Matrix() = default;
-  /*
    * Shrink row.
    * Shrinks the row by a specifide size.
    * @param An integer indicating the number of rows to shrink.

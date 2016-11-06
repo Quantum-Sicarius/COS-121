@@ -9,31 +9,19 @@
 class Seat : public Object {
 protected:
   std::shared_ptr<Person> seatedPerson;
-  int compareTo(Object const &) const { return 0; };
+  int compareTo(Object const &) const;
   bool taken;
 
 public:
-  Seat() {
-    this->taken = false;
-    this->seatedPerson = std::make_unique<NullPersonObject>(NullPersonObject());
-  }
-  std::shared_ptr<Person> getPerson() { return this->seatedPerson; }
-  void setPerson(std::shared_ptr<Person> p) {
-    if (this->taken) {
-      throw "This seat is taken!";
-    }
-    this->seatedPerson = p;
-    this->taken = true;
-  }
+  Seat();
+  std::shared_ptr<Person> getPerson();
+  void setPerson(std::shared_ptr<Person> p);
 
-  void removePerson() {
-    this->seatedPerson = std::make_unique<NullPersonObject>(NullPersonObject());
-    this->taken = false;
-  }
+  void removePerson();
 
-  bool isTaken() { return this->taken; }
+  bool isTaken();
 
-  void print(std::ostream &o = std::cout) const {};
+  void print(std::ostream &o = std::cout) const;
 };
 
 #endif
