@@ -1,6 +1,7 @@
 #ifndef APPLICATION_H
 #define APPLICATION_H
 
+#include "adult.hpp"
 #include "complexList.hpp"
 #include "developer.hpp"
 #include "reservation.hpp"
@@ -11,10 +12,13 @@
 class Application {
 private:
   std::unique_ptr<ComplexList> _complexes;
-  std::unique_ptr<Reservation> _reservations;
+  std::unique_ptr<std::vector<std::shared_ptr<Reservation>>> _reservations;
 
 public:
   Application() {
+    this->_reservations =
+        std::make_unique<std::vector<std::shared_ptr<Reservation>>>(
+            std::vector<std::shared_ptr<Reservation>>());
     this->_complexes = std::make_unique<ComplexList>(ComplexList());
 
     std::unique_ptr<Complex> c1(new Complex("Complex 1"));
@@ -24,11 +28,22 @@ public:
     this->_complexes->appendComplex(std::move(c1));
     this->_complexes->appendComplex(std::move(c2));
     this->_complexes->appendComplex(std::move(c3));
+
+    std::unique_ptr<Reservation> r(new Reservation("Reservation 1"));
+
+    std::shared_ptr<Person> p(new Adult());
+    r->operator<<(p);
+
+    r->reserve(0, this->_complexes->at(0)->at(0));
+
+    this->_reservations->push_back(std::move(r));
   }
 
   void start();
   void newComplexForm();
   void listComplexes();
+  void listReservations();
+  void newReservation();
   void listAuditoriums(std::shared_ptr<Complex>);
   void viewComplex(std::shared_ptr<Complex>);
   void viewAuditorium(std::shared_ptr<Auditorium>);

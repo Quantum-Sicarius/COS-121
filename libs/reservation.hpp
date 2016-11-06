@@ -233,6 +233,7 @@ private:
   int _furthestState;
   std::shared_ptr<ReservationDetail> _state;
   std::unique_ptr<std::vector<std::shared_ptr<ReservationDetail>>> _changes;
+  std::string _name;
 
   // Not very efficient.
   void stateUpdate(std::shared_ptr<ReservationDetail> state) {
@@ -269,7 +270,8 @@ private:
   }
 
 public:
-  Reservation() {
+  Reservation(std::string name) {
+    this->_name = name;
     this->_currentState = 0;
     this->_furthestState = 0;
     this->_changes =
@@ -333,6 +335,8 @@ public:
       this->_state->_reserved = true;
     }
   }
+
+  std::string getName() { return this->_name; }
 
   bool isReserved() { return this->_state->_reserved; }
 };

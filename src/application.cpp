@@ -131,6 +131,18 @@ void Application::start() {
         /* Post the menu */
         post_menu(my_menu);
         wrefresh(my_menu_win);
+      } else if (itemName == "List Reservations") {
+        clear();
+        listReservations();
+        box(my_menu_win, 0, 0);
+        print_in_middle(my_menu_win, 1, 0, 40, "Main Menu", COLOR_PAIR(1));
+        mvwaddch(my_menu_win, 2, 0, ACS_LTEE);
+        mvwhline(my_menu_win, 2, 1, ACS_HLINE, 38);
+        mvwaddch(my_menu_win, 2, 39, ACS_RTEE);
+        refresh();
+        /* Post the menu */
+        post_menu(my_menu);
+        wrefresh(my_menu_win);
       } else if (itemName == "Exit") {
         quit = true;
       }
@@ -357,6 +369,16 @@ void Application::viewAuditorium(std::shared_ptr<Auditorium> auditorium) {
       } else if (itemName == "View Seats") {
         clear();
         viewSeats(auditorium);
+        box(my_menu_win, 0, 0);
+        print_in_middle(my_menu_win, 1, 0, 40, strdup((title).c_str()),
+                        COLOR_PAIR(1));
+        mvwaddch(my_menu_win, 2, 0, ACS_LTEE);
+        mvwhline(my_menu_win, 2, 1, ACS_HLINE, 38);
+        mvwaddch(my_menu_win, 2, 39, ACS_RTEE);
+        refresh();
+        /* Post the menu */
+        post_menu(my_menu);
+        wrefresh(my_menu_win);
       }
     }
 
@@ -422,8 +444,10 @@ void Application::viewSeats(std::shared_ptr<Auditorium> auditorium) {
   for (size_t row = 0; row < auditorium->getRows(); row++) {
     for (size_t col = 0; col < auditorium->getColSize(row); col++) {
       try {
-        if (auditorium->getSeat(row, col)) {
-          mvwprintw(my_menu_win, base_x + col, base_y + row, "%s", "X");
+        if (auditorium->getSeat(row, col)->isTaken()) {
+          mvwprintw(my_menu_win, base_x + col, base_y + row, "%s", "X,");
+        } else {
+          mvwprintw(my_menu_win, base_x + col, base_y + row, "%s", "_,");
         }
       } catch (...) {
         mvwprintw(my_menu_win, base_x + col, base_y + row, "%s", " ");
@@ -433,7 +457,6 @@ void Application::viewSeats(std::shared_ptr<Auditorium> auditorium) {
 
   mvwaddch(my_menu_win, 2, 0, ACS_LTEE);
   mvwhline(my_menu_win, 2, 1, ACS_HLINE, 38);
-  mvwhline(my_menu_win, (auditorium->getRows() + base_y + 1), 1, ACS_HLINE, 38);
   mvwaddch(my_menu_win, 2, 39, ACS_RTEE);
 
   /* Post the menu */
@@ -634,12 +657,18 @@ void Application::listComplexes() {
   init_pair(1, COLOR_RED, COLOR_BLACK);
   init_pair(2, COLOR_CYAN, COLOR_BLACK);
 
+  char *list_complexes_choices[] = {
+      "Back", (char *)NULL,
+  };
+
   /* Create items */
-  n_choices = this->_complexes->size();
+  n_choices = this->_complexes->size() + 2;
   my_items = (ITEM **)calloc(n_choices, sizeof(ITEM *));
-  for (i = 0; i < n_choices; ++i)
+  for (i = 0; i < this->_complexes->size(); ++i)
     my_items[i] =
         new_item(strdup(this->_complexes->at(i)->getName().c_str()), "");
+
+  my_items[this->_complexes->size()] = new_item(list_complexes_choices[0], "");
 
   /* Crate menu */
   my_menu = new_menu((ITEM **)my_items);
@@ -713,6 +742,126 @@ void Application::listComplexes() {
           wrefresh(my_menu_win);
           break;
         }
+      }
+      if (itemName == "Back") {
+        quit = true;
+        break;
+      }
+      break;
+    }
+
+    if (quit) {
+      break;
+    }
+    wrefresh(my_menu_win);
+  }
+
+  /* Unpost and free all the memory taken up */
+  unpost_menu(my_menu);
+  free_menu(my_menu);
+  for (i = 0; i < n_choices; ++i)
+    free_item(my_items[i]);
+  endwin();
+}
+
+void Application::listReservations() {
+  ITEM **my_items;
+  int c;
+  MENU *my_menu;
+  WINDOW *my_menu_win;
+  int n_choices, i;
+
+  init_pair(1, COLOR_RED, COLOR_BLACK);
+  init_pair(2, COLOR_CYAN, COLOR_BLACK);
+
+  char *list_reservations_choices[] = {
+      "Back", (char *)NULL,
+  };
+
+  /* Create items */
+  n_choices = this->_reservations->size() + 2;
+  my_items = (ITEM **)calloc(n_choices, sizeof(ITEM *));
+  for (i = 0; i < this->_reservations->size(); ++i)
+    my_items[i] =
+        new_item(strdup(this->_reservations->at(i)->getName().c_str()), "");
+
+  my_items[this->_reservations->size()] =
+      new_item(list_reservations_choices[0], "");
+
+  /* Crate menu */
+  my_menu = new_menu((ITEM **)my_items);
+
+  /* Create the window to be associated with the menu */
+  my_menu_win = newwin(10, 40, 4, 4);
+  keypad(my_menu_win, TRUE);
+
+  /* Set main window and sub window */
+  set_menu_win(my_menu, my_menu_win);
+  set_menu_sub(my_menu, derwin(my_menu_win, 6, 38, 3, 1));
+  set_menu_format(my_menu, 5, 1);
+
+  /* Set menu mark to the string " * " */
+  set_menu_mark(my_menu, " * ");
+
+  /* Print a border around the main window and print a title */
+  box(my_menu_win, 0, 0);
+  print_in_middle(my_menu_win, 1, 0, 40, "Listing Reservations", COLOR_PAIR(1));
+  mvwaddch(my_menu_win, 2, 0, ACS_LTEE);
+  mvwhline(my_menu_win, 2, 1, ACS_HLINE, 38);
+  mvwaddch(my_menu_win, 2, 39, ACS_RTEE);
+
+  /* Post the menu */
+  post_menu(my_menu);
+  wrefresh(my_menu_win);
+
+  attron(COLOR_PAIR(2));
+  mvprintw(LINES - 2, 0,
+           "Use PageUp and PageDown to scoll down or up a page of items");
+  mvprintw(LINES - 1, 0, "Arrow Keys to navigate (ESC to Exit)");
+  attroff(COLOR_PAIR(2));
+  refresh();
+
+  bool quit = false;
+
+  while (!quit && (c = wgetch(my_menu_win))) {
+    switch (c) {
+    case KEY_DOWN:
+      menu_driver(my_menu, REQ_DOWN_ITEM);
+      break;
+    case KEY_UP:
+      menu_driver(my_menu, REQ_UP_ITEM);
+      break;
+    case KEY_NPAGE:
+      menu_driver(my_menu, REQ_SCR_DPAGE);
+      break;
+    case KEY_PPAGE:
+      menu_driver(my_menu, REQ_SCR_UPAGE);
+      break;
+    case 27:
+      quit = true;
+      break;
+    case 10:
+      std::string itemName = item_name(current_item(my_menu));
+      std::shared_ptr<Reservation> reservation;
+      for (size_t i = 0; i < this->_reservations->size(); i++) {
+        if (itemName == this->_reservations->at(i)->getName()) {
+          reservation = this->_reservations->at(i);
+          clear();
+          box(my_menu_win, 0, 0);
+          print_in_middle(my_menu_win, 1, 0, 40, ("Listing Reservations"),
+                          COLOR_PAIR(1));
+          mvwaddch(my_menu_win, 2, 0, ACS_LTEE);
+          mvwhline(my_menu_win, 2, 1, ACS_HLINE, 38);
+          mvwaddch(my_menu_win, 2, 39, ACS_RTEE);
+          refresh();
+          /* Post the menu */
+          post_menu(my_menu);
+          wrefresh(my_menu_win);
+          break;
+        }
+      }
+      if (itemName == "Back") {
+        quit = true;
       }
       break;
     }

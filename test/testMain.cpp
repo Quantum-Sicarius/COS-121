@@ -750,7 +750,7 @@ TEST_CASE("Complex tests", "[complex]") {
 }
 
 TEST_CASE("Reservation tests (Fixed Auditorium)", "[reservation]") {
-  std::unique_ptr<Reservation> r(new Reservation());
+  std::unique_ptr<Reservation> r(new Reservation("Reservation 1"));
   std::shared_ptr<Auditorium> a(new Fixed("Fixed Auditorium 1"));
   a->addRow(5);
 
