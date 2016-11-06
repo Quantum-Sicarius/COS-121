@@ -16,7 +16,7 @@ ifndef CXXFLAGS
 endif
 
 LIBS = -lform -lpanel -lmenu -lncurses
-OBJECTS = $(addprefix build/,$(notdir object.o nullObject.o auditorium.o integer.o listAsVector.o listAsDLL.o listAsSLL.o dynamicSizedMatrix.o variable.o ))
+OBJECTS = $(addprefix build/,$(notdir object.o nullObject.o auditorium.o integer.o listAsVector.o listAsDLL.o listAsSLL.o dynamicSizedMatrix.o variable.o fixed.o fixedSizedMatrix.o))
 OBJECTS_TEST = $(OBJECTS) build/catchConfig.o build/testMain.o
 OBJECTS_MAIN = $(OBJECTS) build/main.o build/application.o
 
@@ -60,6 +60,10 @@ build/variable.o: libs/variable.hpp src/variable.cpp
 	$(CXX) $(CXXFLAGS) -c src/variable.cpp -o $@
 build/auditorium.o: libs/auditorium.hpp src/auditorium.cpp
 	$(CXX) $(CXXFLAGS) -c src/auditorium.cpp -o $@
+build/fixed.o: libs/fixed.hpp src/fixed.cpp
+	$(CXX) $(CXXFLAGS) -c src/fixed.cpp -o $@
+build/fixedSizedMatrix.o: libs/fixedSizedMatrix.hpp src/fixedSizedMatrix.cpp
+	$(CXX) $(CXXFLAGS) -c src/fixedSizedMatrix.cpp -o $@
 
 .PHONY: clean
 clean:

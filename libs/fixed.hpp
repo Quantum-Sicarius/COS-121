@@ -11,41 +11,25 @@ private:
   std::unique_ptr<FixedSizedMatrix> layout;
 
 protected:
-  int compareTo(Object const &) const { return 0; }
+  int compareTo(Object const &) const;
 
-  void setToSeat() {
-    for (size_t i = 0; i < this->layout->size(); i++) {
-      for (size_t x = 0; x < (*this->layout)[i]->size(); x++) {
-        (*(*this->layout)[i])[x] = std::make_unique<Seat>(Seat());
-      }
-    }
-  }
+  void setToSeat();
 
 public:
-  Fixed(std::string name) : Auditorium(name) {
-    std::unique_ptr<FixedSizedMatrix> newLayout(new FixedSizedMatrix());
-    this->layout = std::move(newLayout);
-  }
+  Fixed(std::string name);
 
-  void addRow(int i) {
-    this->layout->growRow(i);
-    this->setToSeat();
-  }
+  void addRow(int i);
 
-  int getRows() { return this->layout->size(); }
-  int getColSize(int i) { return (*this->layout)[i]->size(); }
+  int getRows();
+  int getColSize(int i);
+  void addSeatsInRow(int row, int amount);
+  std::shared_ptr<Seat> getSeat(int row, int col);
 
-  void addSeatsInRow(int row, int amount) { return; }
+  ~Fixed();
 
-  std::shared_ptr<Seat> getSeat(int row, int col) {
-    return std::dynamic_pointer_cast<Seat>((*(*this->layout)[row])[col]);
-  }
-
-  ~Fixed() { this->layout.reset(); }
-
-  bool isNull(void) const { return false; }
-  int compare(Object const &) const { return 0; }
-  void print(std::ostream & = std::cout) const {}
+  bool isNull(void) const;
+  int compare(Object const &) const;
+  void print(std::ostream & = std::cout) const;
 };
 
 #endif
