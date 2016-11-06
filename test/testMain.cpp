@@ -1,3 +1,4 @@
+#include "../libs/adult.hpp"
 #include "../libs/auditoriumList.hpp"
 #include "../libs/catch.hpp"
 #include "../libs/developer.hpp"
@@ -9,6 +10,7 @@
 #include "../libs/listAsSLL.hpp"
 #include "../libs/listAsVector.hpp"
 #include "../libs/nullObject.hpp"
+#include "../libs/reservation.hpp"
 #include "../libs/variable.hpp"
 
 #include <memory>
@@ -745,4 +747,106 @@ TEST_CASE("Complex tests", "[complex]") {
   d->newVariableAuditorium(5, "Variable Auditorium 1");
 
   REQUIRE(list->at(1)->getName() == "Variable Auditorium 1");
+}
+
+TEST_CASE("Reservation tests (Fixed Auditorium)", "[reservation]") {
+  std::unique_ptr<Reservation> r(new Reservation());
+  std::shared_ptr<Auditorium> a(new Fixed("Fixed Auditorium 1"));
+  a->addRow(5);
+
+  std::shared_ptr<Person> p1(new Adult());
+  std::shared_ptr<Person> p2(new Adult());
+  std::shared_ptr<Person> p3(new Adult());
+
+  r->operator<<(p1);
+  SECTION("Should be able to undo add person") {
+    r->Undo();
+    REQUIRE(r->getReservationPersons()->size() == 0);
+    SECTION("Should be able to redo add person") {
+      r->Redo();
+      REQUIRE(r->getReservationPersons()->size() == 1);
+    }
+  }
+  r->operator<<(p2);
+  r->operator<<(p3);
+
+  SECTION("A reservation should be able to be made (Strategy best fit)") {
+    r->reserve(0, a);
+
+    REQUIRE(r->isReserved() == true);
+
+    SECTION("The seats should be booked") {
+      REQUIRE(a->getSeat(0, 0)->isTaken() == true);
+      REQUIRE(a->getSeat(0, 1)->isTaken() == true);
+      REQUIRE(a->getSeat(0, 2)->isTaken() == true);
+    }
+
+    SECTION("A reservation should be able to be undone") {
+      r->Undo();
+      REQUIRE(r->isReserved() == false);
+
+      SECTION("The seats should no longer be booked") {
+        REQUIRE(a->getSeat(0, 0)->isTaken() == false);
+        REQUIRE(a->getSeat(0, 1)->isTaken() == false);
+        REQUIRE(a->getSeat(0, 2)->isTaken() == false);
+      }
+
+      SECTION("A reservation should be able to be redone") {
+        r->Redo();
+        REQUIRE(r->isReserved() == true);
+
+        SECTION("The seats should be booked") {
+          REQUIRE(a->getSeat(0, 0)->isTaken() == true);
+          REQUIRE(a->getSeat(0, 1)->isTaken() == true);
+          REQUIRE(a->getSeat(0, 2)->isTaken() == true);
+        }
+      }
+    }
+  }
+
+  SECTION("A reservation should be able to be made (Strategy best view)") {
+    r->reserve(1, a);
+
+    REQUIRE(r->isReserved() == true);
+
+    SECTION("The seats should be booked") {
+      REQUIRE(a->getSeat(4, 0)->isTaken() == true);
+      REQUIRE(a->getSeat(4, 1)->isTaken() == true);
+      REQUIRE(a->getSeat(4, 2)->isTaken() == true);
+    }
+
+    SECTION("A reservation should be able to be undone") { r->Undo(); }
+  }
+
+  SECTION("A reservation should be able to be made (Strategy block fit)") {
+    r->reserve(2, a);
+
+    REQUIRE(r->isReserved() == true);
+
+    SECTION("The seats should be booked") {
+      REQUIRE(a->getSeat(0, 0)->isTaken() == true);
+      REQUIRE(a->getSeat(0, 1)->isTaken() == true);
+      REQUIRE(a->getSeat(0, 2)->isTaken() == true);
+    }
+  }
+
+  SECTION("The strategy (Strategy block fit) should fail if it can't book in a "
+          "row") {
+    std::shared_ptr<Person> p4(new Adult());
+    std::shared_ptr<Person> p5(new Adult());
+    std::shared_ptr<Person> p6(new Adult());
+    r->operator<<(p4);
+    r->operator<<(p5);
+    r->operator<<(p6);
+
+    std::string error;
+
+    try {
+      r->reserve(2, a);
+    } catch (char const *e) {
+      error = std::string(e);
+    }
+
+    REQUIRE(error == "Failed to book all persons");
+  }
 }
