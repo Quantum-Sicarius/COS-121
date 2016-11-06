@@ -12,15 +12,12 @@ protected:
   std::string name_;
 
 public:
-  Auditorium(std::string name) {
-    this->state_ = "Empty";
-    this->name_ = name;
-  }
-  std::string getName() { return this->name_; }
+  Auditorium(std::string);
+  std::string getName();
 
-  void setName(std::string name) { this->name_ = name; }
-  std::string getState() { return this->state_; }
-  void setState(std::string s) { this->state_ = s; }
+  void setName(std::string);
+  std::string getState();
+  void setState(std::string);
 
   virtual void addRow(int) = 0;
   virtual void addSeatsInRow(int row, int amount) = 0;

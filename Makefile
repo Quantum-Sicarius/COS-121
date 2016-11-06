@@ -16,7 +16,7 @@ ifndef CXXFLAGS
 endif
 
 LIBS = -lform -lpanel -lmenu -lncurses
-OBJECTS = $(addprefix build/,$(notdir object.o nullObject.o auditorium.o integer.o))
+OBJECTS = $(addprefix build/,$(notdir object.o nullObject.o auditorium.o integer.o listAsVector.o listAsDLL.o listAsSLL.o dynamicSizedMatrix.o variable.o ))
 OBJECTS_TEST = $(OBJECTS) build/catchConfig.o build/testMain.o
 OBJECTS_MAIN = $(OBJECTS) build/main.o build/application.o
 
@@ -48,6 +48,18 @@ build/auditorium.o: libs/object.hpp libs/auditorium.hpp src/auditorium.cpp
 	$(CXX) $(CXXFLAGS) -c src/auditorium.cpp -o $@
 build/integer.o: libs/object.hpp libs/integer.hpp src/integer.cpp
 	$(CXX) $(CXXFLAGS) -c src/integer.cpp -o $@
+build/listAsSLL.o: libs/listAsSLL.hpp src/listAsSLL.cpp
+	$(CXX) $(CXXFLAGS) -c src/listAsSLL.cpp -o $@
+build/listAsDLL.o: libs/listAsDLL.hpp src/listAsDLL.cpp
+	$(CXX) $(CXXFLAGS) -c src/listAsDLL.cpp -o $@
+build/listAsVector.o: libs/listAsVector.hpp src/listAsVector.cpp
+	$(CXX) $(CXXFLAGS) -c src/listAsVector.cpp -o $@
+build/dynamicSizedMatrix.o: libs/dynamicSizedMatrix.hpp src/dynamicSizedMatrix.cpp
+	$(CXX) $(CXXFLAGS) -c src/dynamicSizedMatrix.cpp -o $@
+build/variable.o: libs/variable.hpp src/variable.cpp
+	$(CXX) $(CXXFLAGS) -c src/variable.cpp -o $@
+build/auditorium.o: libs/auditorium.hpp src/auditorium.cpp
+	$(CXX) $(CXXFLAGS) -c src/auditorium.cpp -o $@
 
 .PHONY: clean
 clean:

@@ -2,6 +2,7 @@
 #define CONTAINER_H
 
 #include "object.hpp"
+#include <memory>
 
 class Container : public Object {};
 
