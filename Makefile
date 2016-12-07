@@ -7,7 +7,7 @@ ifneq ($(strip $(COMPILER)),)
 endif
 
 ifndef CXXFLAGS
- cxxflags.release := -std=c++14
+ cxxflags.release := -std=c++1y
  cxxflags.debug := ${cxxflags.release} -Wall -pedantic -fcolor-diagnostics -g -fsanitize=address -fstack-protector
  CXXFLAGS := ${cxxflags.${BUILD}}
  runflags.release :=

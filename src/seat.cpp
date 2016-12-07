@@ -1,3 +1,12 @@
+/**
+* @Author: Thomas Scholtz <thomas>
+* @Date:   2016-11-06T23:33:23+02:00
+* @Email:  thomas@quantum-sicarius.za.net
+* @Last modified by:   thomas
+* @Last modified time: 2016-12-07T19:16:48+02:00
+* @License: Attribution-NonCommercial-ShareAlike 4.0 International
+*/
+
 #include "../libs/seat.hpp"
 
 int Seat::compareTo(Object const &) const { return 0; };

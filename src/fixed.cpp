@@ -1,3 +1,12 @@
+/**
+* @Author: Thomas Scholtz <thomas>
+* @Date:   2016-11-06T23:19:17+02:00
+* @Email:  thomas@quantum-sicarius.za.net
+* @Last modified by:   thomas
+* @Last modified time: 2016-12-07T19:16:31+02:00
+* @License: Attribution-NonCommercial-ShareAlike 4.0 International
+*/
+
 #include "../libs/fixed.hpp"
 
 int Fixed::compareTo(Object const &) const { return 0; }
